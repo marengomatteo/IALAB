@@ -1,0 +1,1 @@
+Progetto IA lab gruppo: Frattarola, Giacolono, Marengo
