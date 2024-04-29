@@ -1,7 +1,7 @@
 import tkinter as tk
 
 PATH_FRATTA = "C:/Users/marco/OneDrive/Desktop/maze.txt"
-PATH_MATTE = "/Users/matteomarengo/Documents/uni/IALAB/Prolog"
+PATH_MATTE = "/Users/matteomarengo/Documents/uni/IALAB/Prolog/maze.txt"
 
 class MazeEditor:
     def __init__(self, master):
