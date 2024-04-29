@@ -1,6 +1,7 @@
 import tkinter as tk
 
-PATH = "C:/Users/marco/OneDrive/Desktop/maze.txt"
+PATH_FRATTA = "C:/Users/marco/OneDrive/Desktop/maze.txt"
+PATH_MATTE = "/Users/matteomarengo/Documents/uni/IALAB/Prolog"
 
 class MazeEditor:
     def __init__(self, master):
@@ -98,9 +99,9 @@ class MazeEditor:
         cols = int(self.cols_entry.get())
         start_pos = self.start_point if self.start_point else None
         end_pos = self.end_point if self.end_point else None
-        with open(PATH, "w") as f:
+        with open(PATH_MATTE, "w") as f:
             f.write(f'num_righe({rows}).\n')
-            f.write(f'num_colonne({cols}).\n')
+            f.write(f'num_col({cols}).\n')
             if start_pos:
                 f.write(f'iniziale(pos({start_pos[1]+1},{start_pos[0]+1})).\n')
             if end_pos:
