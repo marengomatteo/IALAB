@@ -74,20 +74,11 @@ muovi_lista_gemme(nord, [pos(R,C)|Tail]) :-
     muovi_lista_gemme(Rest).
 
 #Verifica per il bonus
-tre_gemme_adiacenti([G1, G2, G3]) :-
-    adiacenti(G1, G2),  % Controlla se G1 è adiacente a G2
-    adiacenti(G2, G3),  % Controlla se G2 è adiacente a G3
-    adiacenti(G1, G3).  % Controlla se G1 è adiacente a G3
-
 adiacenti(pos(R1,C1), pos(R2,C2)) :-
-    D_R is abs(R1 - R2),
-    D_C is abs(C1 - C2),
-    D_R =:= 1,
-    D_C =:= 0.
+    (R1 =:= R2, abs(C1 - C2) =:= 1);
+    (C1 =:= C2, abs(R1 - R2) =:= 1).
 
-adiacenti(pos(R1,C1), pos(R2,C2)) :-
-    D_R is abs(R1 - R2),
-    D_C is abs(C1 - C2),
-    D_R =:= 0,
-    D_C =:= 1.
-    # non so se possiamo usare l'or  (   (D_R =:= 1, D_C =:= 0) ; (D_R =:= 0, D_C =:= 1) ).
+# Verifico se le gemme sulla griglia sono contigue a due a due
+contigue_due_a_due(pos(R1,C1), pos(R2,C2), pos(R3,C3)) :-
+    (adiacenti(pos(R1,C1), pos(R2,C2)), adiacenti(pos(R2,C2), pos(R3,C3)));
+    (adiacenti(pos(R1,C1), pos(R3,C3)), adiacenti(pos(R3,C3), pos(R2,C2))).
