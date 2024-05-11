@@ -31,54 +31,69 @@ applicabile(est,pos(R,C)) :-
     C1 is C+1,
     \+ occupata(pos(R,C1)).
 
+/* --- TRASFORMA EST --- */
 trasforma(est,pos(R,C),pos(R,C1)) :- 
     applicabile(est, pos(R,C+1)),
     C1 is C+1,
     raccogli(pos(R,C1)),
-    trasforma(est,pos(R,C), pos(R,C1)).
+    trasforma(est,pos(R,C), pos(R,C1)),!.
 
 trasforma(est,pos(R,C),pos(R,C1)) :- 
     applicabile(est, pos(R,C+1)),
     C2 is C+1,
-    trasforma(est,pos(R,C2), pos(R,C1)).
+    trasforma(est,pos(R,C2), pos(R,C1)),!.
 
-trasforma(est,pos(R,C),pos(R,C1)) :- C1 is C+1.
+trasforma(est,pos(R,C),pos(R,C1)) :- 
+  (C < 8 ->  C1 is C + 1 ;   C =:= 8, C1 is C),!.
+
+/* --- TRASFORMA OVEST --- */
 
 trasforma(ovest,pos(R,C),pos(R,C1)) :- 
     applicabile(ovest, pos(R,C-1)),
     C2 is C-1,
     raccogli(pos(R,C2)),
-    trasforma(ovest,pos(R,C2), pos(R,C1)).
+    trasforma(ovest,pos(R,C2), pos(R,C1)),!.
 
 trasforma(ovest,pos(R,C),pos(R,C1)) :- 
     applicabile(ovest, pos(R,C-1)),
     C2 is C-1,
-    trasforma(ovest,pos(R,C2), pos(R,C1)).
+    trasforma(ovest,pos(R,C2), pos(R,C1)),!.
 
-trasforma(ovest,pos(R,C),pos(R,C1)) :- C1 is C-1.
+trasforma(ovest, pos(R,C), pos(R,C1)) :-
+    (C > 1 ->  C1 is C - 1 ;   C =:= 1, C1 is C),!.
+
+/* --- TRASFORMA SUD --- */
 
 trasforma(sud,pos(R,C),pos(R1,C)) :- 
-    applicabile(sud, pos(R1,C)),
+    applicabile(sud, pos(R+1,C)),
     R1 is R+1,
-    trasforma(sud,pos(R,C), pos(R1,C)).
+    trasforma(sud,pos(R,C), pos(R1,C)),!.
 
 trasforma(sud,pos(R,C),pos(R1,C)) :- 
-    applicabile(sud, pos(R1,C)),
+    applicabile(sud, pos(R+1,C)),
     R2 is R+1,
-    raccogli(pos(R1,C)),
-    trasforma(sud,pos(R2,C), pos(R1,C)).
-trasforma(sud,pos(R,C),pos(R1,C)) :- R1 is R+1.
+    raccogli(pos(R2,C)),
+    trasforma(sud,pos(R2,C), pos(R1,C)),!.
+
+trasforma(sud,pos(R,C),pos(R1,C)) :- 
+    (R < 8 ->  R1 is R + 1 ;   R =:= 8, R1 is R),!.
+
+/* --- TRASFORMA NORD --- */
 
 trasforma(nord,pos(R,C),pos(R1,C)) :- 
-    applicabile(nord, pos(R1,C)),
+    applicabile(nord, pos(R-1,C)),
     R2 is R-1,
-    raccogli(pos(R1,C)),
-    trasforma(nord,pos(R2,C), pos(R1,C)).
+    raccogli(pos(R2,C)),
+    trasforma(nord,pos(R2,C), pos(R1,C)),!.
+
 trasforma(nord,pos(R,C),pos(R1,C)) :- 
-    applicabile(nord, pos(R1,C)),
-    R1 is R-1,
-    trasforma(nord,pos(R,C), pos(R1,C)).
-trasforma(nord,pos(R,C),pos(R1,C)) :- R1 is R-1.
+    applicabile(nord, pos(R-1,C)),
+    R2 is R-1,
+    trasforma(nord,pos(R2,C), pos(R1,C)),!.
+
+trasforma(nord,pos(R,C),pos(R1,C)) :- 
+  (R > 1 ->  R1 is R - 1 ;   R =:= 1, R1 is R),!.
+
 
 raccogli(pos(R,C)) :-
     martello(pos(R,C)),
