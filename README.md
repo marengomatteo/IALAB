@@ -9,3 +9,10 @@ working_directory(_, "PATH_DOVE_AVETE_LE_VOSTRE_BELLISIME_COSE").
 ['azioni.pl'].
 ['prof_lim.pl'].
 ricerca(Sol,20),write(Sol).
+
+
+
+
+Per clips:
+(chdir "PATH")
+(load "file.name")
