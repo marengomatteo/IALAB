@@ -16,3 +16,7 @@ ricerca(Sol,20),write(Sol).
 Per clips:
 (chdir "PATH")
 (load "file.name")
+
+
+
+TODO: Provare a modificare lo spostamento del mostriciatttolo. al posto di spostare una alla volta controlliamo finchè non trova caselle vuote e alla prima occupata si sposta nelle coordinate dell'occupata -1. Per le gemme possiamo tenere una regola che se incontra una gemma prosegue e imposta la gemma a -1 e il mostro a -2 :)

@@ -10,6 +10,84 @@ occupata(pos(R,C)) :-
     gemma(pos(R,C)).
     /*(\+possiede(martello), ghiaccio(pos(R,C))).*/
 
+trasforma(est, pos(R,C), pos(R,C1)) :- 
+    applicabile(est, pos(R,C), pos(R, C1)).
+
+trasforma(ovest, pos(R,C), pos(R,C1)) :-
+    applicabile(ovest, pos(R,C), pos(R,C1)).
+
+trasforma(sud, pos(R,C), pos(R1,C)) :-
+    applicabile(sud, pos(R,C), pos(R1,C)).
+
+
+trasforma(nord, pos(R,C), pos(R1,C)) :-
+    applicabile(nord, pos(R,C), pos(R1,C)).
+
+/* --- TRASFORMA EST --- */
+
+applicabile(est, pos(R,C), pos(R, C1)) :- 
+    C2 is C+1,
+    \+ occupata(pos(R,C2)),
+    applicabile(est, pos(R,C2),pos(R,C1)).
+
+applicabile(est, pos(R,C), pos(R, C1)) :- 
+    C2 is C+1,
+    occupata(pos(R,C2)),
+    C1 is C.
+
+
+
+
+
+
+/* --- TRASFORMA OVEST --- */
+
+applicabile(ovest, pos(R,C), pos(R,C1)) :-
+    C2 is C-1,
+    \+ occupata(pos(R,C2)),
+    applicabile(ovest, pos(R,C2), pos(R,C1)).
+
+applicabile(ovest, pos(R,C), pos(R,C1)) :-
+    C2 is C-1,
+    occupata(pos(R,C2)),
+    C1 is C.
+
+
+
+
+/* --- TRASFORMA SUD --- */
+
+applicabile(sud, pos(R,C), pos(R1,C)) :-
+    R2 is R+1,
+    \+ occupata(pos(R2,C)),
+    applicabile(sud, pos(R2,C), pos(R1,C)).
+
+applicabile(sud, pos(R,C), pos(R1,C)) :-
+    R2 is R+1,
+    occupata(pos(R2,C)),
+    R1 is R.
+
+
+
+
+/* --- TRASFORMA NORD --- */
+
+applicabile(nord, pos(R,C), pos(R1,C)) :-
+    R2 is R-1,
+    \+ occupata(pos(R2,C)),
+    applicabile(nord, pos(R2,C), pos(R1,C)).
+
+applicabile(nord, pos(R,C), pos(R1,C)) :-
+    R2 is R-1,
+    occupata(pos(R2,C)),
+    R1 is R.
+
+
+
+nonRipetere(_,[]).
+nonRipetere(Az, [LastAz|_]) :- Az \= LastAz.
+
+    /*
 
 applicabile(nord,pos(R,C)) :- 
     R>1,
@@ -32,11 +110,10 @@ applicabile(est,pos(R,C)) :-
     \+ occupata(pos(R,C1)).
 
 
-nonRipetere(_,[]).
-nonRipetere(Az, [LastAz|_]) :- Az \= LastAz.
 
 
-/* --- TRASFORMA EST --- */
+
+ --- TRASFORMA EST --- 
 trasforma(est,pos(R,C),pos(R,C1)) :- 
     applicabile(est,pos(R,C)),
     C2 is C+1,
@@ -50,7 +127,9 @@ trasforma(est,pos(R,C),pos(R,C1)) :-
 
 trasforma(est,pos(R,C),pos(R,C)).
 
-/* --- TRASFORMA OVEST --- */
+
+
+ --- TRASFORMA OVEST --- 
 
 trasforma(ovest,pos(R,C), _ , pos(R,C1)) :-
     applicabile(ovest,pos(R,C)),
@@ -65,7 +144,7 @@ trasforma(ovest,pos(R,C), _ ,pos(R,C1) ) :-
 
 trasforma(ovest,pos(R,C), LastAz , pos(R,C)) :- LastAz =:= ovest. 
 
-/* --- TRASFORMA SUD --- */
+ --- TRASFORMA SUD --- 
 
 trasforma(sud,pos(R,C),pos(R1,C)) :- 
     applicabile(sud, pos(R,C)),
@@ -80,7 +159,7 @@ trasforma(sud,pos(R,C),pos(R1,C)) :-
 
 trasforma(sud,pos(R,C),pos(R,C)). 
 
-/* --- TRASFORMA NORD --- */
+ --- TRASFORMA NORD --- 
 
 trasforma(nord,pos(R,C),pos(R1,C)) :- 
     applicabile(nord,pos(R,C)),
@@ -94,7 +173,7 @@ trasforma(nord,pos(R,C),pos(R1,C)) :-
     trasforma(nord,pos(R2,C), pos(R1,C)).
 
 trasforma(nord,pos(R,C),pos(R,C)).
-
+*/
 % raccogli(pos(R,C)) :-
 %     martello(pos(R,C)),
 %     \+ possiede(martello),

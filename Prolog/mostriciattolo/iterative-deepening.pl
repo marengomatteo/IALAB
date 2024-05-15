@@ -19,7 +19,7 @@ ric_prof(S,_,_,[]) :- finale(S),!.
 ric_prof(S,Profondita,Visitati,[Az|SeqAzioni]):-
     Profondita > 0,
     nonRipetere(Az,SeqAzioni),
-    trasforma(Az,S, _ , SNuovo),
+    trasforma(Az,S, SNuovo),
     NuovaProfondita is Profondita-1,
     ric_prof(SNuovo,NuovaProfondita,[S|Visitati],SeqAzioni).
 
