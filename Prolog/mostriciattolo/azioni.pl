@@ -1,206 +1,121 @@
+
 /*
-    azione applicabile:
-        - controlliamo che non sia occupata da un muro fisso
-        - controlliamo che non sia presente del ghiaccio
+    in base all'azione compiuta (nord,sud,est,ovest) il mostriciattolo e le gemme dovranno muoversi fino alla fine della board
+    
+    check da fare:
+        contollare che sia le gemme sia il mostriciattolo non escano dalla board
+    
+    facciamo un predicato generico che muova tutto?
+
+    caso 1 da gestire:
+        se il mostriciattolo si trova in pos(1,5) e la gemma in pos(1,6)
+        quando l'azione è est il mostriciattolo non dovrà andare sopra la gemma quindi
+        le posizioni finali dovranno essere pos(1,7) e pos(1,8) idem per il viceversa
+        come controlliamo questa cosa?
+
+    caso 2 da gestire:
+        se la gemma 1 si trova in pos(1,5) e la gemma 2 in pos(1,6)
+        quando l'azione è est la gemma 1 non dovrà andare sopra la gemma 2 quindi
+        le posizioni finali dovranno essere pos(1,7) e pos(1,8) idem per il viceversa
+        come controlliamo questa cosa?
 */
-/* per applicabile controllo anche che il ghiaccio sia abbattibile o no, quindi se ho il martello è applicabile*/
 
-occupata(pos(R,C)) :- 
-    muro(pos(R,C));
-    gemma(pos(R,C));
-    C=:=0;
-    R=:=0;
-    C=:=9;
-    R=:=9.
-    /*(\+possiede(martello), ghiaccio(pos(R,C))).*/
+occupata(pos(R,C)) :-
+    gemma(pos(R,C)).
 
-trasforma(est, pos(R,C), pos(R,C1)) :- 
-    applicabile(est, pos(R,C), pos(R, C1)).
+controllo_oggetti(Az,pos(R,C)) :-
+    gemma(pos(R,C)),
+    priorita(Az, pos(R,C)),
+    muovi_gemma(Az).
 
-trasforma(ovest, pos(R,C), pos(R,C1)) :-
-    applicabile(ovest, pos(R,C), pos(R,C1)).
+controllo_oggetti(Az,pos(R,C)) :-
+    mostriciattolo(pos(R,C)),
+    priorita(Az, pos(R,C)),
+    muovi_mostriciattolo(Az).
 
-trasforma(sud, pos(R,C), pos(R1,C)) :-
-    applicabile(sud, pos(R,C), pos(R1,C)).
+controllo_oggetti(Az,pos(R,C)).
 
 
-trasforma(nord, pos(R,C), pos(R1,C)) :-
-    applicabile(nord, pos(R,C), pos(R1,C)).
-
-/* --- TRASFORMA EST --- */
-
-applicabile(est, pos(R,C), pos(R, C1)) :- 
-    C2 is C+1,
-    \+ occupata(pos(R,C2)),
-    applicabile(est, pos(R,C2),pos(R,C1)).
-
-applicabile(est, pos(R,C), pos(R, C1)) :- 
-    C2 is C+1,
-    occupata(pos(R,C2)),
-    C1 is C.
-
-
-
-
-
-
-/* --- TRASFORMA OVEST --- */
-
-applicabile(ovest, pos(R,C), pos(R,C1)) :-
-    C2 is C-1,
-    \+ occupata(pos(R,C2)),
-    applicabile(ovest, pos(R,C2), pos(R,C1)).
-
-applicabile(ovest, pos(R,C), pos(R,C1)) :-
-    C2 is C-1,
-    occupata(pos(R,C2)),
-    C1 is C.
-
-
-
-
-/* --- TRASFORMA SUD --- */
-
-applicabile(sud, pos(R,C), pos(R1,C)) :-
-    R2 is R+1,
-    \+ occupata(pos(R2,C)),
-    applicabile(sud, pos(R2,C), pos(R1,C)).
-
-applicabile(sud, pos(R,C), pos(R1,C)) :-
-    R2 is R+1,
-    occupata(pos(R2,C)),
-    R1 is R.
-
-
-
-
-/* --- TRASFORMA NORD --- */
-
-applicabile(nord, pos(R,C), pos(R1,C)) :-
-    R2 is R-1,
-    \+ occupata(pos(R2,C)),
-    applicabile(nord, pos(R2,C), pos(R1,C)).
-
-applicabile(nord, pos(R,C), pos(R1,C)) :-
-    R2 is R-1,
-    occupata(pos(R2,C)),
-    R1 is R.
-
-
-
-nonRipetere(_,[]).
-nonRipetere(Az, [LastAz|_]) :- Az \= LastAz.
-
-    /*
-
-applicabile(nord,pos(R,C)) :- 
-    R>1,
-    R1 is R-1,
-    \+ occupata(pos(R1,C)).
-
-applicabile(ovest,pos(R,C)) :- 
-    C>1,
-    C1 is C-1,
-    \+ occupata(pos(R,C1)).
-
-applicabile(sud,pos(R,C)) :- 
-    num_righe(NR), R<NR,
-    R1 is R+1,
-    \+ occupata(pos(R1,C)).
-
-applicabile(est,pos(R,C)) :- 
-    num_col(NC), C<NC,
+/* priorità est */
+priorita(est,pos(R,C)) :-
     C1 is C+1,
-    \+ occupata(pos(R,C1)).
+    C1 < 9,
+    controllo_oggetti(pos(R,C1)),
+    priorita(est, pos(R,C1)).
 
+priorita(est,pos(R,C)).
 
+/* priorità sud */
+priorita(sud,pos(R,C)) :-
+    R1 is R+1,
+    R1 < 9,
+    controllo_oggetti(pos(R1,C)),
+    priorita(sud, pos(R1,C)).
 
+priorita(sud,pos(R,C)).
 
+/* priorità ovest */
+priorita(ovest,pos(R,C)) :-
+    C1 is C-1,
+    C1 > 1,
+    controllo_oggetti(pos(R,C1)),
+    priorita(ovest, pos(R,C1)).
 
- --- TRASFORMA EST --- 
-trasforma(est,pos(R,C),pos(R,C1)) :- 
-    applicabile(est,pos(R,C)),
+priorita(ovest,pos(R,C)).
+
+/* priorità nord */
+priorita(nord,pos(R,C)) :-
+    R1 is R-1,
+    R1 > 1 ,
+    controllo_oggetti(pos(R1,C)),
+    priorita(nord, pos(R1,C)).
+
+priorita(nord,pos(R,C)).
+
+/* posizione valida est */
+posizione_valida(est,pos(R,C),pos(R,C1))
+    C < 8,
     C2 is C+1,
-    raccogli(pos(R,C2)),
-    trasforma(est,pos(R,C2), pos(R,C1)).
+    \+ occupata(pos(R,C2)),
+    posizione_valida(est, pos(R,C2),pos(R,C1)).
 
-trasforma(est,pos(R,C),pos(R,C1)) :- 
-    applicabile(est,pos(R,C)),
-    C2 is C+1,
-    trasforma(est,pos(R,C2), pos(R,C1)).
+posizione_valida(est, pos(R,C), pos(R, C)).
 
-trasforma(est,pos(R,C),pos(R,C)).
+/* --- posizione valida SUD --- */
 
-
-
- --- TRASFORMA OVEST --- 
-
-trasforma(ovest,pos(R,C), _ , pos(R,C1)) :-
-    applicabile(ovest,pos(R,C)),
-    C2 is C-1,
-    raccogli(pos(R,C2)),
-    trasforma(ovest,pos(R,C2),ovest, pos(R,C1)).
-
-trasforma(ovest,pos(R,C), _ ,pos(R,C1) ) :- 
-    applicabile(ovest, pos(R,C)),
-    C2 is C-1,
-    trasforma(ovest,pos(R,C2), ovest , pos(R,C1)).
-
-trasforma(ovest,pos(R,C), LastAz , pos(R,C)) :- LastAz =:= ovest. 
-
- --- TRASFORMA SUD --- 
-
-trasforma(sud,pos(R,C),pos(R1,C)) :- 
-    applicabile(sud, pos(R,C)),
+posizione_valida(sud, pos(R,C), pos(R1,C)) :-
+    R < 8,
     R2 is R+1,
-    raccogli(pos(R2,C)),
-    trasforma(sud,pos(R2,C), pos(R1,C)).
+    \+ occupata(pos(R2,C)),
+    posizione_valida(sud, pos(R2,C), pos(R1,C)).
 
-trasforma(sud,pos(R,C),pos(R1,C)) :- 
-    applicabile(sud, pos(R,C)),
-    R2 is R+1,
-    trasforma(sud,pos(R2,C), pos(R1,C)).
+posizione_valida(sud, pos(R,C), pos(R,C)).
 
-trasforma(sud,pos(R,C),pos(R,C)). 
+/* posizione valida ovest */
+posizione_valida(ovest,pos(R,C),pos(R,C1))
+    C > 1,
+    C2 is C-1,
+    \+ occupata(pos(R,C2)),
+    posizione_valida(ovest, pos(R,C2),pos(R,C1)).
 
- --- TRASFORMA NORD --- 
+posizione_valida(ovest, pos(R,C), pos(R, C)).
 
-trasforma(nord,pos(R,C),pos(R1,C)) :- 
-    applicabile(nord,pos(R,C)),
+/* --- posizione valida NORD --- */
+
+posizione_valida(nord, pos(R,C), pos(R1,C)) :-
+    R > 1,
     R2 is R-1,
-    raccogli(pos(R2,C)),
-    trasforma(nord,pos(R2,C), pos(R1,C)).
+    \+ occupata(pos(R2,C)),
+    posizione_valida(nord, pos(R2,C), pos(R1,C)).
 
-trasforma(nord,pos(R,C),pos(R1,C)) :- 
-    applicabile(nord,pos(R,C)),
-    R2 is R-1,
-    trasforma(nord,pos(R2,C), pos(R1,C)).
+posizione_valida(nord, pos(R,C), pos(R,C)).
 
-trasforma(nord,pos(R,C),pos(R,C)).
-*/
-% raccogli(pos(R,C)) :-
-%     martello(pos(R,C)),
-%     \+ possiede(martello),
-%     assert(possiede(martello)).
-
-raccogli(_) :- 1>1.
+/* rovescia la board */
+rovesciamento(Az) :-
 
 
-muovi_gemme(Dir) :-
-    findall(pos(R,C), gemma(pos(R,C)), Gemme),  /*Trova tutte le pos delle gemme */
-    muovi_lista_gemme(Dir,Gemme).
+/* muovi mostriciattolo */
 
-muovi_lista_gemme(_,[]). /*Se non ci sono più gemme da muovere, termina*/
-muovi_lista_gemme(Dir, [pos(R,C)|Tail]) :-
-    trasforma(Dir,pos(R,C), pos(R1,C)),
-    retract(gemma(pos(R,C))), /*Possiamo usare il retract?? Altrimenti dobbiamo tenere traccia della lista di posizioni delle gemme e passarla come parametro a ogni chiamata*/
-    assert(gemma(pos(R1,C))),
-    muovi_lista_gemme(Dir, Tail).
 
-adiacenti(pos(R1,C1), pos(R2,C2)) :-
-    (R1 =:= R2, abs(C1 - C2) =:= 1);
-    (C1 =:= C2, abs(R1 - R2) =:= 1).
 
-contigue_due_a_due(pos(R1,C1), pos(R2,C2), pos(R3,C3)) :-
-    (adiacenti(pos(R1,C1), pos(R2,C2)), adiacenti(pos(R2,C2), pos(R3,C3)));
-    (adiacenti(pos(R1,C1), pos(R3,C3)), adiacenti(pos(R3,C3), pos(R2,C2))).
+/* muovi gemme */

@@ -23,6 +23,6 @@ gemma(pos(1,7)).
 gemma(pos(8,8)).
 gemma(pos(4,2)).
 
-/*martello(pos(3,7)).
+martello(pos(3,7)).
 
-possiede(martello).  TODO: capire*/
+/*possiede(martello).  TODO: capire*/
