@@ -7,7 +7,11 @@
 
 occupata(pos(R,C)) :- 
     muro(pos(R,C));
-    gemma(pos(R,C)).
+    gemma(pos(R,C));
+    C=:=0;
+    R=:=0;
+    C=:=9;
+    R=:=9.
     /*(\+possiede(martello), ghiaccio(pos(R,C))).*/
 
 trasforma(est, pos(R,C), pos(R,C1)) :- 
