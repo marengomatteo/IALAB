@@ -49,13 +49,12 @@ reconstruct_path(Node, [(Azione) | Path], Cost) :- % Caso ricorsivo: ricostruisc
     reconstruct_path(Parent, Path, Cost).
 
 % Seleziona il miglior nodo dalla lista aperta
-% ha un problema ma risolvibile oppure ignorabile
 seleziona_nodo([N], _, N) :- !.
 seleziona_nodo([N1, N2 | Rest], ListaFinali,  Best) :-
     f_valutazione(N1, ListaFinali, F1), % calcoliamo la funzione di valutazione sul primo nodo 
     f_valutazione(N2, ListaFinali, F2), % calcoliamo la funzione di valutazione sul secondo nodo
     F1 =< F2, % controlliamo il minore
-    seleziona_nodo([N1 | Rest], ListaFinali, Best). % probabile cut qui, se N1 minore di N2 allora richiamiamo seleziona nodo per controllare i nodi successivi
+    seleziona_nodo([N1 | Rest], ListaFinali, Best). %  se N1 minore di N2 allora richiamiamo seleziona nodo per controllare i nodi successivi
 
 seleziona_nodo([_, N2 | Rest], ListaFinali, Best) :-
     seleziona_nodo([N2 | Rest], ListaFinali, Best).
