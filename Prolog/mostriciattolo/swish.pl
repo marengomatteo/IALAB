@@ -1,3 +1,33 @@
+num_righe(8).
+num_col(8).
+:- dynamic gemma/1.
+:- dynamic mostriciattolo/1.
+
+mostriciattolo(pos(1,4)).
+finale(pos(4,8)).
+
+muro(pos(1,6)).
+muro(pos(2,2)).
+muro(pos(2,6)).
+muro(pos(2,7)).
+muro(pos(2,8)).
+muro(pos(3,8)).
+muro(pos(4,4)).
+muro(pos(4,5)).
+muro(pos(5,5)).
+muro(pos(6,2)).
+muro(pos(7,2)).
+muro(pos(7,6)).
+muro(pos(7,7)).
+muro(pos(8,3)).
+
+%TODO
+gemma(pos(1,7)).
+gemma(pos(5,4)).
+gemma(pos(8,8)).
+
+martello(pos(3,7)).
+
 
 aggiungi_gemma(Gemma) :-
     assertz(gemma(Gemma)).
@@ -202,3 +232,30 @@ nonRipetere(est, [LastAz|_]) :- est \= LastAz.
 nonRipetere(sud, [LastAz|_]) :- sud \= LastAz.
 nonRipetere(ovest, [LastAz|_]) :- ovest \= LastAz.
 nonRipetere(nord, [LastAz|_]) :- nord \= LastAz.
+
+/* ricerca */
+ricerca(Cammino,Profondita,Step,Soglia):-
+    itdeep(Profondita,Soglia,Step,Cammino).
+
+/* iterative deepening */
+itdeep(Profondita,Soglia,_,Cammino) :-
+    Profondita =< Soglia,
+    ric_prof(Profondita,[],Cammino).
+
+itdeep(Profondita,Soglia,Step,Cammino) :-
+    NuovaProf is Profondita + Step,
+    itdeep(NuovaProf,Soglia,Step,Cammino).
+
+/* ricerca in profondità limitata */
+
+ric_prof(_,_,[]) :- 
+    mostriciattolo(G),
+    finale(G), !.
+
+ric_prof(Profondita,AzEff,[Az|SeqAzioni]) :-
+    Profondita > 0,
+    (  AzEff \= [] ->  nonRipetere(Az,AzEff); true ),
+    rovesciamento(Az),
+    NuovaProfondita is Profondita-1,
+    append([Az],AzEff,NewAz),
+    ric_prof(NuovaProfondita,NewAz,SeqAzioni).

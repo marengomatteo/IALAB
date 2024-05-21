@@ -1,26 +1,27 @@
 /* ricerca */
 ricerca(Cammino,Profondita,Step,Soglia):-
-    iniziale(S0),
-    itdeep(S0,Profondita,Soglia,Step,Cammino).
+    itdeep(Profondita,Soglia,Step,Cammino).
 
 /* iterative deepening */
-itdeep(S,Profondita,Soglia,_,Cammino) :-
+itdeep(Profondita,Soglia,_,Cammino) :-
     Profondita =< Soglia,
-    ric_prof(S,Profondita,[],Cammino).
+    ric_prof(Profondita,[],Cammino).
 
-itdeep(S,Profondita,Soglia,Step,Cammino) :-
+itdeep(Profondita,Soglia,Step,Cammino) :-
     NuovaProf is Profondita + Step,
-    itdeep(S,NuovaProf,Soglia,Step,Cammino).
+    itdeep(NuovaProf,Soglia,Step,Cammino).
 
 /* ricerca in profondità limitata */
 
-ric_prof(S,_,_,[]) :- finale(S),!.
+ric_prof(_,_,[]) :- 
+    mostriciattolo(G),
+    finale(G), !.
 
-ric_prof(S,Profondita,Visitati,[Az|SeqAzioni]):-
+ric_prof(Profondita,Visitati,[Az|SeqAzioni]) :-
+    trace,
     Profondita > 0,
-    nonRipetere(Az,SeqAzioni),
-    trasforma(Az,S, SNuovo),
+    rovesciamento(Az),
     NuovaProfondita is Profondita-1,
-    ric_prof(SNuovo,NuovaProfondita,[S|Visitati],SeqAzioni).
+    ric_prof(NuovaProfondita,[Visitati],SeqAzioni).
 
 
