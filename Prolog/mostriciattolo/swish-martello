@@ -19,8 +19,8 @@ mostriciattolo(pos(1,5)).
 martello(pos(6,8)).
 
 gemma(pos(1,7)).
-gemma(pos(2,3)).
-gemma(pos(7,3)).
+gemma(pos(8,8)).
+gemma(pos(5,4)).
 
 finale(pos(4,8)).
 
@@ -48,6 +48,7 @@ ric_prof(_, _, [], [[_,Mostro]|_],_, _) :-
     !.
 
 ric_prof(Profondita,AzEff,[Az|SeqAzioni],PosEl,HaMartello, PosGhiaccio) :-
+    
     Profondita > 0,
     nonRipetere(Az,AzEff),
     ( rovesciamento(Az,PosEl,PosRes, HaMartello, PosGhiaccio, NewPosGhiaccio) ->  
@@ -142,6 +143,7 @@ controllo_oggetti(_, [], NewListaPos, NewListaPos,_, PosGhiaccio, PosGhiaccio).
 /* --- posizione valida EST --- */
 posizione_valida(est,Tipo,pos(R,C),pos(R,C1), ListaPos,HaMartello,PosGhiaccio, NewPosG ) :-
     C2 is C+1,C2 =< 8,
+    check_martello(Tipo,pos(R,C2),HaMartello),
     \+ occupata(pos(R,C2),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(est,Tipo,pos(R,C2),pos(R,C1), ListaPos,HaMartello, PosGhiaccio, NewPosG).
 posizione_valida(est,_, pos(R,C), pos(R, C), _,_, PosGhiaccio, PosGhiaccio ).
@@ -149,6 +151,7 @@ posizione_valida(est,_, pos(R,C), pos(R, C), _,_, PosGhiaccio, PosGhiaccio ).
 /* --- posizione valida SUD --- */
 posizione_valida(sud,Tipo, pos(R,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     R2 is R+1,R2 =< 8,
+    check_martello(Tipo,pos(R2,C),HaMartello),
     \+ occupata(pos(R2,C),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(sud,Tipo, pos(R2,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG).
 posizione_valida(sud,_, pos(R,C), pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
@@ -157,6 +160,7 @@ posizione_valida(sud,_, pos(R,C), pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
 /* --- posizione valida OVEST --- */
 posizione_valida(ovest,Tipo,pos(R,C),pos(R,C1), ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     C2 is C-1,C2 >= 1,
+    check_martello(Tipo,pos(R,C2),HaMartello),
     \+ occupata(pos(R,C2), Tipo,ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(ovest,Tipo, pos(R,C2),pos(R,C1), ListaPos,HaMartello,PosGhiaccio, NewPosG).
 posizione_valida(ovest,_, pos(R,C), pos(R, C), _,_,PosGhiaccio, PosGhiaccio).
@@ -164,22 +168,19 @@ posizione_valida(ovest,_, pos(R,C), pos(R, C), _,_,PosGhiaccio, PosGhiaccio).
 /* --- posizione valida NORD --- */
 posizione_valida(nord,Tipo, pos(R,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     R2 is R-1,  R2 >= 1,
+    check_martello(Tipo,pos(R2,C),HaMartello),
     \+ occupata(pos(R2,C),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(nord,Tipo, pos(R2,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG).
 posizione_valida(nord,_, pos(R,C), pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
 
 
-check_martello(pos(R,C),HaMartello,PosGhiaccio,NewPosG) :-
-    ha_martello(pos(R,C), HaMartello), 
-    NewPosG = PosGhiaccio.
+check_martello(Tipo,pos(R,C), HaMartello):-
+    (   Tipo = mostro -> ha_martello(pos(R,C), HaMartello)
+    ;   
+    true   ).
 
 occupata(pos(R,C),Tipo,ListaEl,HaMartello,PosGhiaccio,NewPosG) :-
     member([_,pos(R, C)], ListaEl);
-    ( Tipo = mostro, martello(pos(R,C)) 
-    	-> 
-    	check_martello(pos(R,C),HaMartello,PosGhiaccio,NewPosG),
-        false
-     ;
      (   
          muro(pos(R,C));
      	( ( Tipo = mostro, HaMartello == true, member(pos(R,C),PosGhiaccio)) ->   
@@ -188,8 +189,7 @@ occupata(pos(R,C),Tipo,ListaEl,HaMartello,PosGhiaccio,NewPosG) :-
         	;
      		member(pos(R,C),PosGhiaccio),
             NewPosG = PosGhiaccio
-     	))
-    ).
+     	)).
 
 
 elimina_elemento(pos(R,C), [pos(R,C)|T], T) :- !.
