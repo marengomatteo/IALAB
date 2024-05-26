@@ -9,52 +9,55 @@ muro(pos(6,2)).
 muro(pos(7,2)).
 muro(pos(7,6)).
 muro(pos(8,3)).
+muro(pos(8,5)).
+muro(pos(7,8)).
+muro(pos(7,7)).
 
 ghiaccio(pos(2,6)).
 ghiaccio(pos(5,8)).
-ghiaccio(pos(7,7)).
 
 mostriciattolo(pos(1,5)).
 
 martello(pos(6,8)).
 
-gemma(pos(1,7)).
+gemma(pos(8,7)).
 gemma(pos(8,8)).
-gemma(pos(5,4)).
+gemma(pos(8,6)).
 
 finale(pos(4,8)).
 
 /* ricerca */
-ricerca(Cammino,Profondita,Step,Soglia):-
+ricerca(Cammino,Profondita,Step,Soglia, Bonus):-
     mostriciattolo(M),
     findall([gemma, G], gemma(G), PosGemme),
     findall(Gh, ghiaccio(Gh), PosGhiaccio),
     ListaPos = [[mostro,M] | PosGemme],
-    itdeep(Profondita,Soglia,Step,Cammino, ListaPos, _, PosGhiaccio).
+    itdeep(Profondita,Soglia,Step,Cammino, ListaPos, _, PosGhiaccio, Bonus).
 
 /* iterative deepening */
-itdeep(Profondita,Soglia,_,Cammino,ListaPos,HaMartello, PosGhiaccio) :-
+itdeep(Profondita,Soglia,_,Cammino,ListaPos,HaMartello, PosGhiaccio, Bonus) :-
     Profondita =< Soglia,
-    ric_prof(Profondita,[],Cammino,ListaPos,HaMartello, PosGhiaccio).
+    ric_prof(Profondita,[],Cammino,ListaPos,HaMartello, PosGhiaccio, Bonus).
 
-itdeep(Profondita,Soglia,Step,Cammino, ListaPos,HaMartello, PosGhiaccio) :-
+itdeep(Profondita,Soglia,Step,Cammino, ListaPos,HaMartello, PosGhiaccio, Bonus) :-
     NuovaProf is Profondita + Step,
-    itdeep(NuovaProf,Soglia,Step,Cammino, ListaPos,HaMartello, PosGhiaccio).
+    itdeep(NuovaProf,Soglia,Step,Cammino, ListaPos,HaMartello, PosGhiaccio, Bonus).
 
 /* ricerca in profondità limitata */
 
-ric_prof(_, _, [], [[_,Mostro]|_],_, _) :- 
+ric_prof(_, _, [], [[_,Mostro]|Tail],_, _, Bonus) :- 
     finale(Mostro), 
+    contigue_due_a_due(Tail, Bonus),
     !.
 
-ric_prof(Profondita,AzEff,[Az|SeqAzioni],PosEl,HaMartello, PosGhiaccio) :-
+ric_prof(Profondita,AzEff,[Az|SeqAzioni],PosEl,HaMartello, PosGhiaccio, Bonus) :-
     
     Profondita > 0,
     nonRipetere(Az,AzEff),
     ( rovesciamento(Az,PosEl,PosRes, HaMartello, PosGhiaccio, NewPosGhiaccio) ->  
     	NuovaProfondita is Profondita-1,
     	append([Az],AzEff,NewAz),
-        ric_prof(NuovaProfondita,NewAz,SeqAzioni,PosRes,HaMartello, NewPosGhiaccio)
+        ric_prof(NuovaProfondita,NewAz,SeqAzioni,PosRes,HaMartello, NewPosGhiaccio, Bonus)
     	;
 	    false ).
 
@@ -209,3 +212,18 @@ modifica_posizione([], _,_, []).
 modifica_posizione([[Tipo,pos(R,C)] | Resto], CurrentPos,NewPos, [[Tipo,ElPos]| NuovoResto]) :-
     (   pos(R,C) = CurrentPos -> ElPos = NewPos; ElPos = pos(R,C) ),
     modifica_posizione(Resto, CurrentPos, NewPos, NuovoResto).
+
+adiacenti(pos(R1,C1), pos(R2,C2)) :-
+    (R1 =:= R2, abs(C1 - C2) =:= 1);
+    (C1 =:= C2, abs(R1 - R2) =:= 1).
+
+contigue_due_a_due(ListaEl, Bonus) :-
+    findall(pos(R, C), member([gemma, pos(R, C)], ListaEl), [Pos1, Pos2, Pos3]),
+    ha_bonus([Pos1, Pos2,Pos3], Bonus).
+    
+ha_bonus([Pos1, Pos2,Pos3], true) :- 
+    (   (adiacenti(Pos1, Pos2), adiacenti(Pos2, Pos3));
+        (adiacenti(Pos1, Pos3), adiacenti(Pos3, Pos2));
+    	(adiacenti(Pos1, Pos2), adiacenti(Pos3, Pos1))
+    ).
+ha_bonus(_, false).
