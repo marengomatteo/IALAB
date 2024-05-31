@@ -25,7 +25,7 @@ ricerca(Cammino,Cost) :-
     a_star(ListaFinali,CamminoInverso,Cost,[S0],[]),
     inverti(CamminoInverso,Cammino).
 
-
+a_star(_,_,_,[],_):- fail,!.
 a_star(ListaFinali,Cammino,Costo,StatiOpen,StatiClose) :-
     seleziona_nodo(StatiOpen,ListaFinali,pos(X,Y)),
     (
