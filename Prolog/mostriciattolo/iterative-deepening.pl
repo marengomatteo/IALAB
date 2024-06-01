@@ -1,26 +1,36 @@
 /* ricerca */
-ricerca(Cammino,Profondita,Step,Soglia):-
-    iniziale(S0),
-    itdeep(S0,Profondita,Soglia,Step,Cammino).
+ricerca(Cammino,Profondita,Step,Soglia, Bonus):-
+    mostriciattolo(M),
+    findall([gemma, G], gemma(G), PosGemme),
+    findall(Gh, ghiaccio(Gh), PosGhiaccio),
+    cattivo(C),
+    assertz(incontrato(false)),
+    ListaPos = [[mostro,M], [cattivo,C] | PosGemme ],
+    itdeep(Profondita,Soglia,Step,Cammino, ListaPos, _, PosGhiaccio, Bonus).
 
 /* iterative deepening */
-itdeep(S,Profondita,Soglia,_,Cammino) :-
+itdeep(Profondita,Soglia,_,Cammino,ListaPos,HaMartello, PosGhiaccio, Bonus) :-
     Profondita =< Soglia,
-    ric_prof(S,Profondita,[],Cammino).
+    ric_prof(Profondita,[],Cammino,ListaPos,HaMartello, PosGhiaccio, Bonus).
 
-itdeep(S,Profondita,Soglia,Step,Cammino) :-
+itdeep(Profondita,Soglia,Step,Cammino, ListaPos,HaMartello, PosGhiaccio, Bonus) :-
     NuovaProf is Profondita + Step,
-    itdeep(S,NuovaProf,Soglia,Step,Cammino).
+    NuovaProf =< Soglia,
+    itdeep(NuovaProf,Soglia,Step,Cammino, ListaPos,HaMartello, PosGhiaccio, Bonus).
 
 /* ricerca in profondità limitata */
 
-ric_prof(S,_,_,[]) :- finale(S),!.
+ric_prof(_, _, [], [[_,Mostro],_|Tail],_, _, Bonus) :- 
+    finale(Mostro),
+    contigue_due_a_due(Tail, Bonus),
+    !.
 
-ric_prof(S,Profondita,Visitati,[Az|SeqAzioni]):-
+ric_prof(Profondita,AzEff,[Az|SeqAzioni],PosEl,HaMartello, PosGhiaccio, Bonus) :-
     Profondita > 0,
-    nonRipetere(Az,SeqAzioni),
-    trasforma(Az,S, SNuovo),
-    NuovaProfondita is Profondita-1,
-    ric_prof(SNuovo,NuovaProfondita,[S|Visitati],SeqAzioni).
-
-
+    nonRipetere(Az,AzEff),
+    (   rovesciamento(Az,PosEl,PosRes, HaMartello, PosGhiaccio, NewPosGhiaccio) -> 
+    	NuovaProfondita is Profondita-1,
+    	append([Az],AzEff,NewAz),
+        ric_prof(NuovaProfondita,NewAz,SeqAzioni,PosRes,HaMartello, NewPosGhiaccio, Bonus)
+    	;
+	    false ).

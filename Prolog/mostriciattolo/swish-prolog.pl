@@ -1,3 +1,72 @@
+muro(pos(1,6)).
+muro(pos(2,2)).
+muro(pos(2,8)).
+muro(pos(3,8)).
+muro(pos(4,4)).
+muro(pos(4,5)).
+muro(pos(5,5)).
+muro(pos(6,2)).
+muro(pos(7,1)).
+muro(pos(7,2)).
+muro(pos(7,6)).
+muro(pos(7,7)).
+muro(pos(7,8)).
+muro(pos(8,3)).
+
+ghiaccio(pos(2,6)).
+ghiaccio(pos(2,7)).
+
+mostriciattolo(pos(1,4)).
+
+martello(pos(3,5)).
+
+gemma(pos(8,4)).
+gemma(pos(8,8)).
+gemma(pos(5,4)).
+
+finale(pos(4,8)).
+
+cattivo(pos(8,1)).
+
+:- dynamic incontrato/1.
+
+/* ricerca */
+ricerca(Cammino,Profondita,Step,Soglia, Bonus):-
+    mostriciattolo(M),
+    findall([gemma, G], gemma(G), PosGemme),
+    findall(Gh, ghiaccio(Gh), PosGhiaccio),
+    cattivo(C),
+    assertz(incontrato(false)),
+    ListaPos = [[mostro,M], [cattivo,C] | PosGemme ],
+    itdeep(Profondita,Soglia,Step,Cammino, ListaPos, _, PosGhiaccio, Bonus).
+
+/* iterative deepening */
+itdeep(Profondita,Soglia,_,Cammino,ListaPos,HaMartello, PosGhiaccio, Bonus) :-
+    Profondita =< Soglia,
+    ric_prof(Profondita,[],Cammino,ListaPos,HaMartello, PosGhiaccio, Bonus).
+
+itdeep(Profondita,Soglia,Step,Cammino, ListaPos,HaMartello, PosGhiaccio, Bonus) :-
+    NuovaProf is Profondita + Step,
+    NuovaProf =< Soglia,
+    itdeep(NuovaProf,Soglia,Step,Cammino, ListaPos,HaMartello, PosGhiaccio, Bonus).
+
+/* ricerca in profondità limitata */
+
+ric_prof(_, _, [], [[_,Mostro],_|Tail],_, _, Bonus) :- 
+    finale(Mostro),
+    contigue_due_a_due(Tail, Bonus),
+    !.
+
+ric_prof(Profondita,AzEff,[Az|SeqAzioni],PosEl,HaMartello, PosGhiaccio, Bonus) :-
+    Profondita > 0,
+    nonRipetere(Az,AzEff),
+    (   rovesciamento(Az,PosEl,PosRes, HaMartello, PosGhiaccio, NewPosGhiaccio) -> 
+    	NuovaProfondita is Profondita-1,
+    	append([Az],AzEff,NewAz),
+        ric_prof(NuovaProfondita,NewAz,SeqAzioni,PosRes,HaMartello, NewPosGhiaccio, Bonus)
+    	;
+	    false ).
+
 
 nonRipetere(est, [LastAz|_]) :- est \= LastAz.
 nonRipetere(est, []).
@@ -11,8 +80,12 @@ nonRipetere(nord,[]).
 rovesciamento(est,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
     righe_elementi(est,PosElementi, Lista),
     itera_righe(est,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
-    ( incontrato(X), X == true -> retract(incontrato(X)),
-    assertz(incontrato(false)), fail; true).
+    ( incontrato(X), X == true ->
+    	retract(incontrato(X)),
+    	assertz(incontrato(false)), 
+    	fail; 
+    	true
+    ).
 
 rovesciamento(ovest,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
     righe_elementi(ovest,PosElementi, Lista),
@@ -89,7 +162,7 @@ controllo_oggetti(_, [], NewListaPos, NewListaPos,_, PosGhiaccio, PosGhiaccio).
 posizione_valida(est,Tipo,pos(R,C),pos(R,C1),ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     C2 is C+1,C2 =< 8,
      ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R,C2),ListaPos); true  ),
-     ( Tipo = mostro -> check_martello(Tipo,pos(R,C2),HaMartello);true),
+     ( Tipo = mostro -> check_martello(pos(R,C2),HaMartello);true),
     \+ occupata(pos(R,C2),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(est,Tipo,pos(R,C2),pos(R,C1), ListaPos,HaMartello, PosGhiaccio, NewPosG).
 
@@ -99,7 +172,7 @@ posizione_valida(est,_,pos(R,C),pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
 posizione_valida(sud,Tipo, pos(R,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     R2 is R+1,R2 =< 8,
     ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R2,C),ListaPos); true  ),
-    (   Tipo = mostro -> check_martello(Tipo,pos(R2,C),HaMartello);true),
+    (   Tipo = mostro -> check_martello(pos(R2,C),HaMartello);true),
     \+ occupata(pos(R2,C),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(sud,Tipo, pos(R2,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG).
 
@@ -109,7 +182,7 @@ posizione_valida(sud,_,pos(R,C),pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
 posizione_valida(ovest,Tipo,pos(R,C),pos(R,C1),ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     C2 is C-1,C2 >= 1,
     ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R,C2),ListaPos); true  ),
-    (   Tipo = mostro -> check_martello(Tipo,pos(R,C2),HaMartello) ; true),
+    (   Tipo = mostro -> check_martello(pos(R,C2),HaMartello) ; true),
     \+ occupata(pos(R,C2), Tipo,ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(ovest,Tipo, pos(R,C2),pos(R,C1), ListaPos,HaMartello,PosGhiaccio, NewPosG).
 
@@ -119,7 +192,7 @@ posizione_valida(ovest,_, pos(R,C), pos(R, C),_,_,PosGhiaccio, PosGhiaccio).
 posizione_valida(nord,Tipo, pos(R,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     R2 is R-1,  R2 >= 1,
     ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R2,C),ListaPos); true  ),
-    (   Tipo = mostro -> check_martello(Tipo,pos(R2,C),HaMartello) ; true ),
+    (   Tipo = mostro -> check_martello(pos(R2,C),HaMartello) ; true ),
     \+ occupata(pos(R2,C),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(nord,Tipo, pos(R2,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG).
 posizione_valida(nord,_,pos(R,C),pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
@@ -129,12 +202,7 @@ incontra_cattivo(Tipo,Pos,[[_,Mostro],[_,Cattivo]|_]) :-
     ( Tipo = cattivo,Pos == Mostro -> retract(incontrato(_)),assertz(incontrato(true))).
 incontra_cattivo(_,_,_).
 
-check_martello(Tipo,pos(R,C), HaMartello):-
-    (   Tipo = mostro -> 
-    	ha_martello(pos(R,C), HaMartello)
-	    ;   
-    	true   
-    ).
+check_martello(pos(R,C), HaMartello):- ha_martello(pos(R,C), HaMartello).
 
 occupata(pos(R,C),Tipo,ListaEl,HaMartello,PosGhiaccio,NewPosG) :-
  	member([_,pos(R, C)], ListaEl);

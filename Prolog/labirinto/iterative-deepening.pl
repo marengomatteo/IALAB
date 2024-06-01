@@ -5,7 +5,7 @@ ricerca(Cammino,Profondita,Step,Soglia):-
 
 /* iterative deepening */
 itdeep(S,Profondita,Soglia,_,Cammino) :-
-    Profondita =< Soglia,
+    Profondita =< Soglia,!,
     ric_prof(S,Profondita,[],Cammino).
 
 itdeep(S,Profondita,Soglia,Step,Cammino) :-
