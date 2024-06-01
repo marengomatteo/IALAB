@@ -1,204 +1,183 @@
 
-aggiungi_gemma(Gemma) :-
-    assertz(gemma(Gemma)).
+nonRipetere(est, [LastAz|_]) :- est \= LastAz.
+nonRipetere(est, []).
+nonRipetere(sud, [LastAz|_]) :- sud \= LastAz.
+nonRipetere(sud, []).
+nonRipetere(ovest, [LastAz|_]) :- ovest \= LastAz.
+nonRipetere(ovest, []).
+nonRipetere(nord, [LastAz|_]) :- nord \= LastAz.
+nonRipetere(nord,[]).
 
-rimuovi_gemma(Gemma) :-
-    retract(gemma(Gemma)).
+rovesciamento(est,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
+    righe_elementi(est,PosElementi, Lista),
+    itera_righe(est,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
+    ( incontrato(X), X == true -> retract(incontrato(X)),
+    assertz(incontrato(false)), fail; true).
 
-aggiungi_mostriciattolo(Pos) :-
-    assertz(mostriciattolo(Pos)).
+rovesciamento(ovest,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
+    righe_elementi(ovest,PosElementi, Lista),
+    itera_righe(ovest,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
+     ( incontrato(X), X == true -> retract(incontrato(X)),
+    assertz(incontrato(false)), fail; true).
 
-rimuovi_mostriciattolo(Pos) :-
-    retract(mostriciattolo(Pos)).
+rovesciamento(nord,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
+    colonne_elementi(nord,PosElementi, Lista),
+	itera_colonne(nord,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
+    ( incontrato(X), X == true -> retract(incontrato(X)),assertz(incontrato(false)), fail
+    ; true).
 
-occupata(pos(R,C)) :-
-    gemma(pos(R,C));
-    mostriciattolo(pos(R,C));
-    muro(pos(R,C)).
+rovesciamento(sud,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
+    colonne_elementi(sud,PosElementi, Lista),
+	itera_colonne(sud,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
+    ( incontrato(X), X == true -> retract(incontrato(X)),
+    assertz(incontrato(false)), fail; true).
 
-controllo_oggetti(Az,pos(R,C)) :-
-    gemma(pos(R,C)),
-    priorita(Az, pos(R,C)),
-    rimuovi_gemma(pos(R,C)),
-    posizione_valida(Az, pos(R,C), pos(R1,C1)),
-	aggiungi_gemma(pos(R1,C1)).
 
-controllo_oggetti(Az,pos(R,C)) :-
-    mostriciattolo(pos(R,C)),
-    priorita(Az, pos(R,C)),
-    rimuovi_mostriciattolo(pos(R,C)),
-    posizione_valida(Az, pos(R,C), pos(R1,C1)),
-    aggiungi_mostriciattolo(pos(R1,C1)).
+righe_elementi(_,[], []). 
+righe_elementi(Az,[[_,pos(R, _)] | T], ListaRighe) :- 
+    righe_elementi(Az,T, RT),
+    sort([R | RT],ListaRighe).
 
-controllo_oggetti(_,_).
+colonne_elementi(_,[], []). 
+colonne_elementi(Az,[[_,pos(_, C)] | T], ListaColonne) :- 
+    colonne_elementi(Az,T, CT),
+    sort([C | CT],ListaColonne). 
 
-/* priorità est */
-priorita(est,pos(R,C)) :-
-    C1 is C+1,
-    C1 < 9,
-    controllo_oggetti(est,pos(R,C1)),
-    priorita(est, pos(R,C1)).
+itera_righe(_,[], ListaNew,ListaNew,_, PosGhiaccio, PosGhiaccio).
+% head: prima riga, tail righe dopo
+itera_righe(Az,[Head|Tail], PosElementi, ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
+    ordina_per_colonna(Az,Head,PosElementi,Res),
+    controllo_oggetti(Az,Res,PosElementi,NewPosElementi,HaMartello, PosGhiaccio, NewPosGhiaccio),
+    itera_righe(Az,Tail,NewPosElementi, ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio).
 
-priorita(est,_).
+itera_colonne(_,[], ListaNew,ListaNew,_, PosGhiaccio, PosGhiaccio).
+% head: prima riga, tail righe dopo
+itera_colonne(Az,[Head|Tail], PosElementi, ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
+    ordina_per_riga(Az,Head,PosElementi,Res),
+    controllo_oggetti(Az,Res,PosElementi,NewPosElementi,HaMartello, PosGhiaccio, NewPosGhiaccio),
+    itera_colonne(Az,Tail,NewPosElementi, ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio).
 
-/* priorità sud */
-priorita(sud,pos(R,C)) :-
-    R1 is R+1,
-    R1 < 9,
-    controllo_oggetti(sud,pos(R1,C)),
-    priorita(sud, pos(R1,C)).
+ordina_per_colonna(Az, Riga, ListaPosizioni, ListaOrdinata) :-
+    trova_elementi_riga( Riga, ListaPosizioni, ListaFiltrata),
+    (  Az = est ->  
+    	sort(2, >, ListaFiltrata, ListaOrdinata);
+    	sort(2, <, ListaFiltrata, ListaOrdinata)
+    ).
+ordina_per_riga(Az, Colonna, ListaPosizioni, ListaOrdinata) :-
+    trova_elementi_colonna( Colonna, ListaPosizioni, ListaFiltrata),
+    (  Az = sud ->  
+    	sort(2, >, ListaFiltrata, ListaOrdinata); 
+    	sort(2, <, ListaFiltrata, ListaOrdinata)
+    ).
 
-priorita(sud,_).
+trova_elementi_riga( R,ListaPos, ElementiRiga) :-
+    include(ha_riga(R), ListaPos, ElementiRiga).
+ha_riga(R, [_,pos(R, _)]).
 
-/* priorità ovest */
-priorita(ovest,pos(R,C)) :-
-    C1 is C-1,
-    C1 > 1,
-    controllo_oggetti(ovest,pos(R,C1)),
-    priorita(ovest, pos(R,C1)).
+trova_elementi_colonna( C,ListaPos, ElementiColonne) :-
+    include(ha_colonna(C), ListaPos, ElementiColonne).
+ha_colonna(C, [_,pos(_, C)]).
 
-priorita(ovest,_).
+controllo_oggetti(Az,[[_,pos(R,C)] | Tail],ListaEl, NewListaPosTail,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
+    trova_elemento(pos(R,C), ListaEl, Tipo),
+    posizione_valida(Az,Tipo, pos(R,C), pos(R1,C1), ListaEl,HaMartello, PosGhiaccio, NewPosG),
+    modifica_posizione(ListaEl,pos(R,C),pos(R1,C1), NewListaPos),
+    controllo_oggetti(Az,Tail,NewListaPos, NewListaPosTail,HaMartello, NewPosG, NewPosGhiaccio).
+controllo_oggetti(_, [], NewListaPos, NewListaPos,_, PosGhiaccio, PosGhiaccio).
 
-/* priorità nord */
-priorita(nord,pos(R,C)) :-
-    R1 is R-1,
-    R1 > 1 ,
-    controllo_oggetti(nord,pos(R1,C)),
-    priorita(nord, pos(R1,C)).
-
-priorita(nord,_).
-
-/* TODO: da rinominare*/
 /* --- posizione valida EST --- */
-posizione_valida(est,pos(R,C),pos(R,C1)) :-
-    C < 8,
-    C2 is C+1,
-    \+ occupata(pos(R,C2)),
-    posizione_valida(est, pos(R,C2),pos(R,C1)).
+posizione_valida(est,Tipo,pos(R,C),pos(R,C1),ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
+    C2 is C+1,C2 =< 8,
+     ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R,C2),ListaPos); true  ),
+     ( Tipo = mostro -> check_martello(Tipo,pos(R,C2),HaMartello);true),
+    \+ occupata(pos(R,C2),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
+    posizione_valida(est,Tipo,pos(R,C2),pos(R,C1), ListaPos,HaMartello, PosGhiaccio, NewPosG).
 
-posizione_valida(est, pos(R,C), pos(R, C)).
+posizione_valida(est,_,pos(R,C),pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
 
 /* --- posizione valida SUD --- */
+posizione_valida(sud,Tipo, pos(R,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
+    R2 is R+1,R2 =< 8,
+    ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R2,C),ListaPos); true  ),
+    (   Tipo = mostro -> check_martello(Tipo,pos(R2,C),HaMartello);true),
+    \+ occupata(pos(R2,C),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
+    posizione_valida(sud,Tipo, pos(R2,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG).
 
-posizione_valida(sud, pos(R,C), pos(R1,C)) :-
-    R < 8,
-    R2 is R+1,
-    \+ occupata(pos(R2,C)),
-    posizione_valida(sud, pos(R2,C), pos(R1,C)).
-
-posizione_valida(sud, pos(R,C), pos(R,C)).
-
-/* --- posizione valida OVEST --- */
-posizione_valida(ovest,pos(R,C),pos(R,C1)) :-
-    C > 1,
-    C2 is C-1,
-    \+ occupata(pos(R,C2)),
-    posizione_valida(ovest, pos(R,C2),pos(R,C1)).
-
-posizione_valida(ovest, pos(R,C), pos(R, C)).
-
-/* --- posizione valida NORD --- */
-
-posizione_valida(nord, pos(R,C), pos(R1,C)) :-
-    R > 1,
-    R2 is R-1,
-    \+ occupata(pos(R2,C)),
-    posizione_valida(nord, pos(R2,C), pos(R1,C)).
-
-posizione_valida(nord, pos(R,C), pos(R,C)).
-
-
-/* rovescia la board */
+posizione_valida(sud,_,pos(R,C),pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
     
-rovesciamento(est) :-
-    righe_elementi(Lista),
-    itera_righe(est,Lista).
+/* --- posizione valida OVEST --- */
+posizione_valida(ovest,Tipo,pos(R,C),pos(R,C1),ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
+    C2 is C-1,C2 >= 1,
+    ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R,C2),ListaPos); true  ),
+    (   Tipo = mostro -> check_martello(Tipo,pos(R,C2),HaMartello) ; true),
+    \+ occupata(pos(R,C2), Tipo,ListaPos,HaMartello,PosGhiaccio, NewPosG),
+    posizione_valida(ovest,Tipo, pos(R,C2),pos(R,C1), ListaPos,HaMartello,PosGhiaccio, NewPosG).
 
-rovesciamento(nord) :-
-    colonne_elementi(Lista),
-	itera_colonne(nord,Lista).
+posizione_valida(ovest,_, pos(R,C), pos(R, C),_,_,PosGhiaccio, PosGhiaccio).
+   
+/* --- posizione valida NORD --- */
+posizione_valida(nord,Tipo, pos(R,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
+    R2 is R-1,  R2 >= 1,
+    ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R2,C),ListaPos); true  ),
+    (   Tipo = mostro -> check_martello(Tipo,pos(R2,C),HaMartello) ; true ),
+    \+ occupata(pos(R2,C),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
+    posizione_valida(nord,Tipo, pos(R2,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG).
+posizione_valida(nord,_,pos(R,C),pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
 
-rovesciamento(ovest) :-
-    righe_elementi(Lista),
-    itera_righe(ovest,Lista).
+incontra_cattivo(Tipo,Pos,[[_,Mostro],[_,Cattivo]|_]) :-
+    ( Tipo = mostro,Pos == Cattivo -> retract(incontrato(_)),assertz(incontrato(true)));
+    ( Tipo = cattivo,Pos == Mostro -> retract(incontrato(_)),assertz(incontrato(true))).
+incontra_cattivo(_,_,_).
 
-rovesciamento(sud) :-
-    colonne_elementi(Lista),
-	itera_colonne(sud,Lista).
+check_martello(Tipo,pos(R,C), HaMartello):-
+    (   Tipo = mostro -> 
+    	ha_martello(pos(R,C), HaMartello)
+	    ;   
+    	true   
+    ).
 
-righe_elementi(ListaRighe) :-
-    findall(R, 
-            (gemma(pos(R,_)); mostriciattolo(pos(R,_))), 
-            Righe),
-    sort(Righe, ListaRighe).
-
-colonne_elementi(ListaColonne) :-
-    findall(C, 
-            (gemma(pos(_,C)); mostriciattolo(pos(_,C))), 
-            Colonne),
-    sort(Colonne, ListaColonne).
-
-itera_righe(_,[]).
-itera_righe(Az,[R|Tail]) :-
-    primo_elemento(Az,pos(R,_)),
-    itera_righe(Az,Tail).
-
-itera_colonne(_,[]).
-itera_colonne(Az,[C|Tail]) :-
-    primo_elemento(Az,pos(_,C)),
-    itera_colonne(Az,Tail).
-
-
-/* --- PRIMO ELEMENTO EST --- */
-primo_elemento(est,pos(R,C)) :-
-  (
-  	gemma(pos(R, C));
-  	mostriciattolo(pos(R, C))
-  ),
-  \+ (
-    	(gemma(pos(R,C1)); mostriciattolo(pos(R, C1)) ), 
-    	C1 < C
-    ),
-    controllo_oggetti(est,pos(R,C)).
-
-/* --- PRIMO ELEMENTO OVEST --- */
-primo_elemento(ovest,pos(R,C)) :-
-  (
-  	gemma(pos(R, C));
-  	mostriciattolo(pos(R, C))
-  ),
-  \+ (
-    	(gemma(pos(R,C1)); mostriciattolo(pos(R, C1)) ), 
-    	C1 > C
-    ),
-    controllo_oggetti(ovest,pos(R,C)).
-
-/* --- PRIMO ELEMENTO NORD --- */
-primo_elemento(nord,pos(R,C)) :-
-  (
-  	gemma(pos(R, C));
-  	mostriciattolo(pos(R, C))
-  ),
-  \+ (
-    	(gemma(pos(R1,C)); mostriciattolo(pos(R1, C)) ), 
-    	R < R1
-    ),
-    controllo_oggetti(nord,pos(R,C)).
-
-/* --- PRIMO ELEMENTO SUD --- */
-primo_elemento(sud,pos(R,C)) :-
-  (
-  	gemma(pos(R, C));
-  	mostriciattolo(pos(R, C))
-  ),
-  \+ (
-    	(gemma(pos(R1,C)); mostriciattolo(pos(R1, C)) ), 
-    	R > R1
-    ),
-    controllo_oggetti(sud,pos(R,C)).
+occupata(pos(R,C),Tipo,ListaEl,HaMartello,PosGhiaccio,NewPosG) :-
+ 	member([_,pos(R, C)], ListaEl);
+    (   
+       muro(pos(R,C));
+       ( ( Tipo = mostro, HaMartello == true, member(pos(R,C),PosGhiaccio)) ->   
+              elimina_elemento(pos(R,C), PosGhiaccio, NewPosG),
+              false
+               ;
+               member(pos(R,C),PosGhiaccio),
+              NewPosG = PosGhiaccio
+       )).
 
 
-nonRipetere(est, [LastAz|_]) :- est \= LastAz.
-nonRipetere(sud, [LastAz|_]) :- sud \= LastAz.
-nonRipetere(ovest, [LastAz|_]) :- ovest \= LastAz.
-nonRipetere(nord, [LastAz|_]) :- nord \= LastAz.
+elimina_elemento(pos(R,C), [pos(R,C)|T], T) :- !.
+elimina_elemento(Posizione, [H|T], [H|R]) :-
+    elimina_elemento(Posizione, T, R).
+elimina_elemento(_, [], []).
+
+ha_martello(pos(R,C), true) :- martello(pos(R, C)).
+ha_martello(_, _).
+
+trova_elemento(pos(R,C), [[Tipo, pos(R,C)]|_], Tipo) :- !.
+trova_elemento(Posizione, [_|T], Elemento) :-
+    trova_elemento(Posizione, T, Elemento).
+
+modifica_posizione([], _,_, []).
+
+modifica_posizione([[Tipo,pos(R,C)] | Resto], CurrentPos,NewPos, [[Tipo,ElPos]| NuovoResto]) :-
+    (   pos(R,C) = CurrentPos -> ElPos = NewPos; ElPos = pos(R,C) ),
+    modifica_posizione(Resto, CurrentPos, NewPos, NuovoResto).
+
+adiacenti(pos(R1,C1), pos(R2,C2)) :-
+    (R1 =:= R2, abs(C1 - C2) =:= 1);
+    (C1 =:= C2, abs(R1 - R2) =:= 1).
+
+contigue_due_a_due(ListaEl, Bonus) :-
+    findall(pos(R, C), member([gemma, pos(R, C)], ListaEl), [Pos1, Pos2, Pos3]),
+    ha_bonus([Pos1, Pos2,Pos3], Bonus).
+    
+ha_bonus([Pos1,Pos2,Pos3], true) :- 
+    (   (adiacenti(Pos1, Pos2), adiacenti(Pos2, Pos3));
+        (adiacenti(Pos1, Pos3), adiacenti(Pos3, Pos2));
+    	(adiacenti(Pos1, Pos2), adiacenti(Pos3, Pos1))
+    ).
+ha_bonus(_, false).
