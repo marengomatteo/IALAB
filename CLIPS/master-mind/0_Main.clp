@@ -17,6 +17,17 @@
     (focus AGENT)
 )
 
+(defrule go-on-computer  (declare (salience 30))
+   (maxduration ?d)
+   (status (step ?s&:(< ?s ?d)) )
+
+ =>
+
+    ;(printout t crlf crlf)
+    ;(printout t "vado ad agent  step" ?s)
+    (focus COMPUTER)
+)
+
 
 (defrule go-on-env  (declare (salience 30))
    (maxduration ?d)

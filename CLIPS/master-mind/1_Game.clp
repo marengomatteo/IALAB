@@ -86,7 +86,7 @@
 )
 
 (defrule for-humans (declare (salience -10))
-  (status (step ?s))
+  (status (step ?s) (mode human))
   (answer (step ?s) (right-placed ?rp) (miss-placed ?mp)) 
 =>
   (printout t "Right placed " ?rp " missplaced " ?mp crlf)
@@ -94,7 +94,24 @@
 
 
 (defrule for-humans-gameover (declare (salience -15))
-  (status (step ?s))
+  (status (step ?s) (mode human))
+  (maxduration ?d&:(>= ?s ?d))
+  (secret-code (code $?code))
+=>
+   (printout t "GAME OVER!! " crlf)
+   (printout t "The secret code was: " $?code crlf)
+)  
+
+
+(defrule for-computer (declare (salience -10))
+  (status (step ?s) (mode computer))
+  (answer (step ?s) (right-placed ?rp) (miss-placed ?mp)) 
+=>
+  (printout t "Right placed " ?rp " missplaced " ?mp crlf)
+)  
+
+(defrule for-computer-gameover (declare (salience -15))
+  (status (step ?s) (mode computer))
   (maxduration ?d&:(>= ?s ?d))
   (secret-code (code $?code))
 =>
