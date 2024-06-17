@@ -54,9 +54,3 @@
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
-
-; stato precedente: colors, rp, mp
-; if mp == 4 retry con stessi colori
-; if rp == 0 && mp == 0 retry con gli altri 4 colori
-; if rp > 0 || mp > 0
-;   retry con primi rp colori o mp colori
