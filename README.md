@@ -1,22 +1,48 @@
-Progetto IA lab gruppo: Frattarola, Giacolono, Marengo
+# Progetto IA lab gruppo: Frattarola, Giacolono, Marengo
 
+## PROLOG
 
-Per tutti voi:
-prima di ogni volta che usate prolog dovete lanciare questo comando settando come working directory la directory corrente
-working_directory(_, "PATH_DOVE_AVETE_LE_VOSTRE_BELLISIME_COSE").
-
+### labirinto
+```shell script
+working_directory(_, "PATH/IALAB/Prolog/labirinto").
 ['labirinto.pl'].
 ['azioni.pl'].
-['prof_lim.pl'].
-ricerca(Sol,20),write(Sol).
+```
+
+#### iterative-deepening
+```shell script
+['iterative-deepening.pl'].
+ricerca(Sol,5,5,30),write(Sol).
+```
+
+#### a-star
+```shell script
+['euristica.pl'].
+ricerca(Sol,Costo),write(Sol),write(Costo).
+```
+
+### mostriciattolo
+```shell script
+working_directory(_, "PATH/IALAB/Prolog/mostriciattolo").
+['mostriciattolo.pl'].
+['azioni.pl'].
+['iterative-deepening.pl'].
+ricerca(Sol,10,5,30,Bonus),write(Sol),write(Bonus).
+```
+
+## ASP
+```shell script
+clingo Calendario.lp
+```
 
 
+## CLIPS
+### MAC
+```shell script
+(batch "PATH/IALAB/CLIPS/master-mind/load.sh")
+```
 
-
-Per clips:
-(chdir "PATH")
-(load "file.name")
-
-
-
-TODO: Provare a modificare lo spostamento del mostriciatttolo. al posto di spostare una alla volta controlliamo finchè non trova caselle vuote e alla prima occupata si sposta nelle coordinate dell'occupata -1. Per le gemme possiamo tenere una regola che se incontra una gemma prosegue e imposta la gemma a -1 e il mostro a -2 :)
+### WINDOWS
+```shell script
+(batch "PATH/IALAB/CLIPS/master-mind/go.bat")
+```
