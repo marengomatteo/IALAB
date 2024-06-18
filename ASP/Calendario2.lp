@@ -1,0 +1,41 @@
+% Definizione delle squadre atalanta, bologna, empoli, fiorentina, inter, juventus, lazio, lecce, milan, monza, napoli, roma, salernitana, sassuolo, torino, udinese).
+% squadra(atalanta).
+% squadra(bologna).
+% squadra(empoli).
+% squadra(fiorentina).
+squadra(inter).
+squadra(juventus).
+squadra(lazio).
+squadra(lecce).
+squadra(milan).
+squadra(monza).
+squadra(napoli).
+squadra(roma).
+squadra(salernitana).
+squadra(sassuolo).
+squadra(torino).
+squadra(udinese).
+
+% Definizione dei derby
+derby(inter, milan).
+derby(juventus, torino).
+derby(lazio, roma).
+
+% Generazione dei match
+{ match(X, Y, Giornata) : squadra(X), squadra(Y), X != Y } = 6 :- Giornata = 1..22.
+
+%tolgo la possibilità che una squadra giochi più match in una giornata considerando anche che sia fuori o in casa
+:- match(X, Y, Giornata), match(X, Z, Giornata), Y != Z.
+:- match(X, Y, Giornata), match(Z, X, Giornata).
+:- match(Y, X, Giornata), match(Z, X, Giornata), Y!=Z.
+%tolgo la possibilità che una squadra giochi più match con la stessa squadra in giornate diverse
+:- match(X, Y, Giornata1), match(X, Y, Giornata2), Giornata1 != Giornata2.
+:- match(X, Y, Giornata1), match(Y, X, Giornata2), Giornata1 < 12, Giornata2 < 12.
+:- match(X, Y, Giornata1), match(Y, X, Giornata2), Giornata1 > 11, Giornata2 > 11.
+:- derby(X, Y), match(X, Z, Giornata), match(Y, Q, Giornata).
+%Imponiamo che le sqadre non giochino più di due match di fila in casa
+:- match(X,Y,Giornata1), match(X,Z,Giornata2), match(X,Q,Giornata3), Y!=Z, Y!=Q, Z!=Q, X!=Y, X!=Z, X!=Q, Giornata1=Giornata2+1, Giornata2=Giornata3+1. 
+:- match(Y,X,Giornata1), match(Z,X,Giornata2), match(Q,X,Giornata3), Y!=Z, Y!=Q, Z!=Q, X!=Y, X!=Z, X!=Q, Giornata1=Giornata2+1, Giornata2=Giornata3+1. 
+
+
+#show match/3.
