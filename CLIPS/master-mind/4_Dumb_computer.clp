@@ -1,5 +1,5 @@
 
-(defmodule COMPUTER (import MAIN ?ALL) (import GAME ?ALL) (export ?ALL))
+(defmodule DUMB_COMPUTER (import MAIN ?ALL) (import GAME ?ALL) (export ?ALL))
 
 (defrule init-computer
   (status (step 0) (mode computer))
@@ -29,7 +29,7 @@
 (defrule computer-player
   (status (step ?s) (mode computer))
   (guess (step ?prev-s) (g $?k))
-  (answer (step ?prev-s) (right-placed ?rp) (miss-placed ?mp)) 
+  (answer (step ?prev-s) (right-placed ?rp) (miss-placed ?mp))
   (test (= ?prev-s (- ?s 1)))
   =>
   (printout t "Step " ?prev-s " rp " ?rp " mp" ?mp crlf) 
@@ -54,9 +54,3 @@
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
-
-; stato precedente: colors, rp, mp
-; if mp == 4 retry con stessi colori
-; if rp == 0 && mp == 0 retry con gli altri 4 colori
-; if rp > 0 || mp > 0
-;   retry con primi rp colori o mp colori
