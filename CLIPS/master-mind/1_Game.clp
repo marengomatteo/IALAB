@@ -17,7 +17,6 @@
 )
 
 
-
 (defrule check-mate (declare (salience 100))
   (status (step ?s))
   ?f <- (guess (step ?s) (g ?k1 ?k2 ?k3 ?k4))
@@ -107,7 +106,7 @@
   (status (step ?s) (mode computer))
   (answer (step ?s) (right-placed ?rp) (miss-placed ?mp)) 
 =>
-  (printout t "Right placed " ?rp " missplaced " ?mp crlf)
+  (printout t "Feedback: Right placed " ?rp " missplaced " ?mp crlf)
 )  
 
 (defrule for-computer-gameover (declare (salience -15))
