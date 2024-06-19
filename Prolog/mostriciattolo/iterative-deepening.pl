@@ -4,7 +4,7 @@ ricerca(Cammino,Profondita,Step,Soglia, Bonus):-
     findall([gemma, G], gemma(G), PosGemme),
     findall(Gh, ghiaccio(Gh), PosGhiaccio),
     cattivo(C),
-    ( inc_portale(X), X == true -> retract(inc_portale(X))),
+    ( inc_portale(X), X == true -> retract(inc_portale(X)); true),
     assertz(inc_portale(false)),
     assertz(incontrato(false)),
     ListaPos = [[mostro,M], [cattivo,C] | PosGemme ],

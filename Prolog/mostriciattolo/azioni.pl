@@ -1,3 +1,6 @@
+:- dynamic incontrato/1.
+:- dynamic inc_portale/1.
+
 nonRipetere(est, [LastAz|_]) :- est \= LastAz.
 nonRipetere(est, []).
 nonRipetere(sud, [LastAz|_]) :- sud \= LastAz.

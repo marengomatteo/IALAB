@@ -27,5 +27,3 @@ gemma(pos(5,4)).
 finale(pos(4,8)).
 
 cattivo(pos(8,1)).
-
-:- dynamic incontrato/1.

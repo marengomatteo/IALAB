@@ -27,4 +27,3 @@ gemma(pos(5,1)).
 
 finale(pos(5,3)).
 
-:- dynamic incontrato/1.
