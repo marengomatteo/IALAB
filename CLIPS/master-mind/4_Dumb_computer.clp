@@ -32,7 +32,7 @@
   (answer (step ?prev-s) (right-placed ?rp) (miss-placed ?mp))
   (test (= ?prev-s (- ?s 1)))
   =>
-  (printout t "Step " ?prev-s " rp " ?rp " mp" ?mp crlf) 
+ 
   ;; Inizializza la lista dei colori disponibili
   (bind ?colors (create$ red blue green yellow orange white black purple))
   ;; Inizializza la lista del nuovo tentativo

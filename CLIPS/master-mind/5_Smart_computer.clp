@@ -1,5 +1,5 @@
 
-(defmodule COMPUTER (import MAIN ?ALL) (import GAME ?ALL) (export ?ALL))
+(defmodule SMART_COMPUTER (import MAIN ?ALL) (import GAME ?ALL) (export ?ALL))
 
 (deftemplate color
    (slot value))

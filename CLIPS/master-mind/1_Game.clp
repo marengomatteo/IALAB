@@ -107,6 +107,7 @@
   (answer (step ?s) (right-placed ?rp) (miss-placed ?mp)) 
 =>
   (printout t "Feedback: Right placed " ?rp " missplaced " ?mp crlf)
+  (printout t  crlf)
 )  
 
 (defrule for-computer-gameover (declare (salience -15))
