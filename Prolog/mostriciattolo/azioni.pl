@@ -1,4 +1,3 @@
-
 nonRipetere(est, [LastAz|_]) :- est \= LastAz.
 nonRipetere(est, []).
 nonRipetere(sud, [LastAz|_]) :- sud \= LastAz.
@@ -89,6 +88,7 @@ controllo_oggetti(_, [], NewListaPos, NewListaPos,_, PosGhiaccio, PosGhiaccio).
 posizione_valida(est,Tipo,pos(R,C),pos(R,C1),ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     C2 is C+1,C2 =< 8,
      ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R,C2),ListaPos); true  ),
+     ( ( Tipo = mostro, incontrato(X), X \= true ) ->  incontra_portale(pos(R,C2)); true  ),
      ( Tipo = mostro -> check_martello(Tipo,pos(R,C2),HaMartello);true),
     \+ occupata(pos(R,C2),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(est,Tipo,pos(R,C2),pos(R,C1), ListaPos,HaMartello, PosGhiaccio, NewPosG).
@@ -99,6 +99,7 @@ posizione_valida(est,_,pos(R,C),pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
 posizione_valida(sud,Tipo, pos(R,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     R2 is R+1,R2 =< 8,
     ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R2,C),ListaPos); true  ),
+    ( ( Tipo = mostro, incontrato(X), X \= true ) -> incontra_portale(pos(R2,C)); true  ),
     (   Tipo = mostro -> check_martello(Tipo,pos(R2,C),HaMartello);true),
     \+ occupata(pos(R2,C),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(sud,Tipo, pos(R2,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG).
@@ -109,6 +110,7 @@ posizione_valida(sud,_,pos(R,C),pos(R,C),_,_,PosGhiaccio, PosGhiaccio).
 posizione_valida(ovest,Tipo,pos(R,C),pos(R,C1),ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     C2 is C-1,C2 >= 1,
     ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R,C2),ListaPos); true  ),
+    ( ( Tipo = mostro, incontrato(X), X \= true  ) ->  incontra_portale(pos(R,C2)); true  ),
     (   Tipo = mostro -> check_martello(Tipo,pos(R,C2),HaMartello) ; true),
     \+ occupata(pos(R,C2), Tipo,ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(ovest,Tipo, pos(R,C2),pos(R,C1), ListaPos,HaMartello,PosGhiaccio, NewPosG).
@@ -119,6 +121,7 @@ posizione_valida(ovest,_, pos(R,C), pos(R, C),_,_,PosGhiaccio, PosGhiaccio).
 posizione_valida(nord,Tipo, pos(R,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     R2 is R-1,  R2 >= 1,
     ( ( Tipo = mostro; Tipo = cattivo) ->  incontra_cattivo(Tipo, pos(R2,C),ListaPos); true  ),
+    ( ( Tipo = mostro, incontrato(X), X \= true ) ->  incontra_portale(pos(R2,C)); true  ),
     (   Tipo = mostro -> check_martello(Tipo,pos(R2,C),HaMartello) ; true ),
     \+ occupata(pos(R2,C),Tipo, ListaPos,HaMartello,PosGhiaccio, NewPosG),
     posizione_valida(nord,Tipo, pos(R2,C), pos(R1,C), ListaPos,HaMartello,PosGhiaccio, NewPosG).
@@ -128,6 +131,10 @@ incontra_cattivo(Tipo,Pos,[[_,Mostro],[_,Cattivo]|_]) :-
     ( Tipo = mostro,Pos == Cattivo -> retract(incontrato(_)),assertz(incontrato(true)));
     ( Tipo = cattivo,Pos == Mostro -> retract(incontrato(_)),assertz(incontrato(true))).
 incontra_cattivo(_,_,_).
+
+incontra_portale(Pos) :-
+    finale(Pos) -> retract(inc_portale(_)),assertz(inc_portale(true)).
+incontra_portale(_).
 
 check_martello(Tipo,pos(R,C), HaMartello):-
     (   Tipo = mostro -> 

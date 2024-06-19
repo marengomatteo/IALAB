@@ -30,3 +30,4 @@ gemma(pos(8,2)).
 finale(pos(3,2)).
 
 :- dynamic incontrato/1.
+:- dynamic inc_portale/1.

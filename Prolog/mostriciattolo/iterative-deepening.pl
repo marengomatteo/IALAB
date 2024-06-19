@@ -4,6 +4,8 @@ ricerca(Cammino,Profondita,Step,Soglia, Bonus):-
     findall([gemma, G], gemma(G), PosGemme),
     findall(Gh, ghiaccio(Gh), PosGhiaccio),
     cattivo(C),
+    ( inc_portale(X), X == true -> retract(inc_portale(X))),
+    assertz(inc_portale(false)),
     assertz(incontrato(false)),
     ListaPos = [[mostro,M], [cattivo,C] | PosGemme ],
     itdeep(Profondita,Soglia,Step,Cammino, ListaPos, _, PosGhiaccio, Bonus).
@@ -20,8 +22,9 @@ itdeep(Profondita,Soglia,Step,Cammino, ListaPos,HaMartello, PosGhiaccio, Bonus) 
 
 /* ricerca in profondità limitata */
 
-ric_prof(_, _, [], [[_,Mostro],_|Tail],_, _, Bonus) :- 
-    finale(Mostro),
+ric_prof(_, _, [], [_,_|Tail],_, _, Bonus) :- 
+    inc_portale(X),
+    X==true,
     contigue_due_a_due(Tail, Bonus),
     !.
 
