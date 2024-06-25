@@ -1,5 +1,5 @@
 (deffacts secret-code 
-;;  (secret-code (code blue green orange purple))
+ ; (secret-code (code red yellow green blue))
   (random)
  )
 
