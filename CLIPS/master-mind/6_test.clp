@@ -1,4 +1,15 @@
-
+;buonasera amici questo è un testamento da parte di Fratta. Spero di trovarvi bene (andre dagliela a matte).
+;cosa ho fatto? tutte le condizioni di if per ogni colore delle posizioni sono diventate regole separate. 
+; Così al posto di entrare in una regola e fare mille if entra solo nella regola del colore
+; facendo così non servirà più fare (eq ?c1 red) ma basterà, nella prima parte della regola, mettere "red"
+;  dove c'è (g ?c1 ?c2 ?c3 ?c4). Ho poi creato delle variabili globali per modificare i pesi dei vari ?rp ?mp ?missing
+;tramite salience bisogna far si che vengano chiamate in ordine: primop tentativo -> aggiornamento pesi ->secondo tentativo etc. 
+; per fare ciò ho messo un salience crescente in modo che vengano chiamate in ordine, ma rimangono in loop.
+; TODO: sistemare la roba delle chiamate che rimangono in loop. Spostare il modo per trovare il massimo in una funzione a parte.
+; TODO: inserire le guess in una pool. Se sto tentando di rifare la guess già fatta allora scombino l'ordine. 
+; NOTA BENE: attualmente ho mesos 9 regole che asseriscono random e solo la decima fa un'asserzione sulla base dei pesi. 
+; Questa cosa è solo per testare ma mi ha detto miky che possiamo usarla come versione stupida
+; bacini
 (defmodule DUMB_COMPUTER (import MAIN ?ALL) (import GAME ?ALL) (export ?ALL))
 
 
