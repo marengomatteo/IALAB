@@ -256,11 +256,11 @@
 ;   (pop-focus)
 ; )
 
-(deffunction find-max-weight (?pos)
+(deffunction find-max-weight (?pos ?colors)
    (bind ?max-weight -10000000)
    (bind ?max-color "none")
-   
-   (foreach ?color (create$ red blue yellow white black purple green orange)
+
+   (foreach ?color (create$ ?colors)
       (bind ?current-weight (fact-slot-value ?pos ?color))
       (if (> ?current-weight ?max-weight)
          then
@@ -268,8 +268,9 @@
          (bind ?max-color ?color)
       )
    )
-   
-   (return (create$ ?max-color ?max-weight))
+
+   (bind ?new-colors (delete-member$ ?colors ?max-color)) 
+   (return (create$ ?max-color ?max-weight $?new-colors))
 )
 
 (defrule computer-player (declare (salience 70))
@@ -283,81 +284,62 @@
   ?pos4 <- (peso (pos 4) (red ?pred4) (blue ?pblue4) (yellow ?pyellow4) (white ?pwhite4) (black ?pblack4) (purple ?ppurple4) (green ?pgreen4) (orange ?porange4))
   =>
 
-   (bind ?result (find-max-weight ?pos1))
-   (bind ?max-color (nth$ 1 ?result))
-   (bind ?max-weight (nth$ 2 ?result))
-   (printout t "Il colore con il peso massimo in posizione 1 è " ?max-color " con peso " ?max-weight crlf)
+    (bind ?colors (create$ red blue green yellow orange white black purple))
 
-  ;; Trova il colore con il peso massimo per la posizione 1
-  (bind ?max-color1 red)
-  (bind ?max-weight1 ?pred)
-  (if (> ?pblue ?max-weight1) then (bind ?max-color1 blue) (bind ?max-weight1 ?pblue))
-  (if (> ?pgreen ?max-weight1) then (bind ?max-color1 green) (bind ?max-weight1 ?pgreen))
-  (if (> ?pyellow ?max-weight1) then (bind ?max-color1 yellow) (bind ?max-weight1 ?pyellow))
-  (if (> ?porange ?max-weight1) then (bind ?max-color1 orange) (bind ?max-weight1 ?porange))
-  (if (> ?pwhite ?max-weight1) then (bind ?max-color1 white) (bind ?max-weight1 ?pwhite))
-  (if (> ?pblack ?max-weight1) then (bind ?max-color1 black) (bind ?max-weight1 ?pblack))
-  (if (> ?ppurple ?max-weight1) then (bind ?max-color1 purple) (bind ?max-weight1 ?ppurple))
-  
-  ;; Trova il colore con il peso massimo per la posizione 2
-  (if (not (eq ?max-color1 red)) 
-  then 
-        (bind ?max-color2 red) 
-        (bind ?max-weight2 ?pred2) 
-  else  (bind ?max-color2 blue) 
-        (bind ?max-weight2 ?pblue2))
-  (if (and (not (eq ?max-color1 blue)) (> ?pblue2 ?max-weight2)) then (bind ?max-color2 blue) (bind ?max-weight2 ?pblue2))
-  (if (and (not (eq ?max-color1 green)) (> ?pgreen2 ?max-weight2)) then (bind ?max-color2 green) (bind ?max-weight2 ?pgreen2))
-  (if (and (not (eq ?max-color1 yellow)) (> ?pyellow2 ?max-weight2)) then (bind ?max-color2 yellow) (bind ?max-weight2 ?pyellow2))
-  (if (and (not (eq ?max-color1 orange)) (> ?porange2 ?max-weight2)) then (bind ?max-color2 orange) (bind ?max-weight2 ?porange2))
-  (if (and (not (eq ?max-color1 white)) (> ?pwhite2 ?max-weight2)) then (bind ?max-color2 white) (bind ?max-weight2 ?pwhite2))
-  (if (and (not (eq ?max-color1 black)) (> ?pblack2 ?max-weight2)) then (bind ?max-color2 black) (bind ?max-weight2 ?pblack2))
-  (if (and (not (eq ?max-color1 purple)) (> ?ppurple2 ?max-weight2)) then (bind ?max-color2 purple) (bind ?max-weight2 ?ppurple2))
-  
-  ;; Trova il colore con il peso massimo per la posizione 3
-  (if (and (not (eq ?max-color1 red)) (not (eq ?max-color2 red))) 
-  then 
-        (bind ?max-color3 red) 
-        (bind ?max-weight3 ?pred3) 
-        
-  else (if (and (not (eq ?max-color1 blue)) (not (eq ?max-color2 blue))) 
-        then 
-        (bind ?max-color3 blue) 
-        (bind ?max-weight3 ?pblue3)
-        else (bind ?max-color3 green) (bind ?max-weight3 ?pgreen3)))
-  (if (and (not (eq ?max-color1 blue)) (not (eq ?max-color2 blue)) (> ?pblue3 ?max-weight3)) then (bind ?max-color3 blue) (bind ?max-weight3 ?pblue3))
-  (if (and (not (eq ?max-color1 green)) (not (eq ?max-color2 green)) (> ?pgreen3 ?max-weight3)) then (bind ?max-color3 green) (bind ?max-weight3 ?pgreen3))
-  (if (and (not (eq ?max-color1 yellow)) (not (eq ?max-color2 yellow)) (> ?pyellow3 ?max-weight3)) then (bind ?max-color3 yellow) (bind ?max-weight3 ?pyellow3))
-  (if (and (not (eq ?max-color1 orange)) (not (eq ?max-color2 oramge)) (> ?porange3 ?max-weight3)) then (bind ?max-color3 orange) (bind ?max-weight3 ?porange3))
-  (if (and (not (eq ?max-color1 white)) (not (eq ?max-color2 white)) (> ?pwhite3 ?max-weight3)) then (bind ?max-color3 white) (bind ?max-weight3 ?pwhite3))
-  (if (and (not (eq ?max-color1 black)) (not (eq ?max-color2 black)) (> ?pblack3 ?max-weight3)) then (bind ?max-color3 black) (bind ?max-weight3 ?pblack3))
-  (if (and (not (eq ?max-color1 purple)) (not (eq ?max-color2 purple)) (> ?ppurple3 ?max-weight3)) then (bind ?max-color3 purple) (bind ?max-weight3 ?ppurple3))
-  
-  ;; Trova il colore con il peso massimo per la posizione 4
-  (if (and (not (eq ?max-color1 red)) (not (eq ?max-color2 red)) (not (eq ?max-color3 red))) 
-  then (bind ?max-color4 red) (bind ?max-weight4 ?pred4)
-  else (if (and (not (eq ?max-color1 blue)) (not (eq ?max-color2 blue)) (not (eq ?max-color3 blue))) 
-        then (bind ?max-color4 blue) (bind ?max-weight4 ?pblue4)
-        else (if (and (not (eq ?max-color1 green)) (not (eq ?max-color2 green)) (not (eq ?max-color3 green)))
-            then (bind ?max-color4 green) (bind ?max-weight4 ?pgreen4)
-            else (bind ?max-color4 yellow) (bind ?max-weight4 ?pyellow4))))
+    (bind ?result (find-max-weight ?pos1 ?colors))
+    (bind ?max-color1 (nth$ 1 ?result))
+    (bind ?max-weight1 (nth$ 2 ?result))
+    (bind ?new-colors (subseq$ ?result 3 (length$ ?result)))
 
-  (if (and (not (eq ?max-color1 blue)) (not (eq ?max-color2 blue)) (not (eq ?max-color3 blue)) (> ?pblue4 ?max-weight4)) then (bind ?max-color4 blue) (bind ?max-weight4 ?pblue4))
-  (if (and (not (eq ?max-color1 green)) (not (eq ?max-color2 green)) (not (eq ?max-color3 green)) (> ?pgreen4 ?max-weight4)) then (bind ?max-color4 green) (bind ?max-weight4 ?pgreen4))
-  (if (and (not (eq ?max-color1 yellow)) (not (eq ?max-color2 yellow)) (not (eq ?max-color3 yellow)) (> ?pyellow4 ?max-weight4)) then (bind ?max-color4 yellow) (bind ?max-weight4 ?pyellow4))
-  (if (and (not (eq ?max-color1 orange)) (not (eq ?max-color2 orange)) (not (eq ?max-color3 orange)) (> ?porange4 ?max-weight4)) then (bind ?max-color4 orange) (bind ?max-weight4 ?porange4))
-  (if (and (not (eq ?max-color1 white)) (not (eq ?max-color2 white)) (not (eq ?max-color3 white)) (> ?pwhite4 ?max-weight4)) then (bind ?max-color4 white) (bind ?max-weight4 ?pwhite4))
-  (if (and (not (eq ?max-color1 black)) (not (eq ?max-color2 black)) (not (eq ?max-color3 black)) (> ?pblack4 ?max-weight4)) then (bind ?max-color4 black) (bind ?max-weight4 ?pblack4))
-  (if (and (not (eq ?max-color1 purple)) (not (eq ?max-color2 purple)) (not (eq ?max-color3 purple)) (> ?ppurple4 ?max-weight4)) then (bind ?max-color4 purple) (bind ?max-weight4 ?ppurple4))
+    (bind ?result (find-max-weight ?pos2 ?new-colors))
+    (bind ?max-color2 (nth$ 1 ?result))
+    (bind ?max-weight2 (nth$ 2 ?result))
+    (bind ?new-colors (subseq$ ?result 3 (length$ ?result)))
+    
+    (bind ?result (find-max-weight ?pos3 ?new-colors))
+    (bind ?max-color3 (nth$ 1 ?result))
+    (bind ?max-weight3 (nth$ 2 ?result))
+    (bind ?new-colors (subseq$ ?result 3 (length$ ?result)))
+    
+    (bind ?result (find-max-weight ?pos4 ?new-colors))
+    (bind ?max-color4 (nth$ 1 ?result))
+    (bind ?max-weight4 (nth$ 2 ?result))
+    (bind ?new-colors (subseq$ ?result 3 (length$ ?result)))
 
-
-  ;; Inserisce il nuovo tentativo
-  (assert (guess (step ?s) (g ?max-color1 ?max-color2 ?max-color3 ?max-color4)))
+    (assert (combination (step ?s) (colors ?max-color1 ?max-color2 ?max-color3 ?max-color4)))
   
-  ;; Stampa il tentativo
-  (printout t "Computer's guess at step " ?s ": " crlf)
-  (printout t ?max-color1 " " ?max-color2 " " ?max-color3 " " ?max-color4 crlf)
-  (pop-focus)
+)
+
+(defrule assert-guess (declare (salience 70))
+    (status (step ?s) (mode computer))
+    (combination (step ?s) (colors ?c1 ?c2 ?c3 ?c4))
+    (not (guess (g ?c1 ?c2 ?c3 ?c4)))
+    =>
+
+    (assert (guess (step ?s) (g ?c1 ?c2 ?c3 ?c4)))
+    ;; Inserisce il nuovo tentativo
+    (printout t "Computer's guess at step " ?s ": " crlf)
+    (printout t ?c1 " " ?c2 " " ?c3 " " ?c4 crlf)
+    (pop-focus)
+)
+
+(defrule assert-new-guess (declare (salience 70))
+    (status (step ?s) (mode computer))
+    (combination (step ?s) (colors $?colors))
+    =>
+    (bind ?colors (create$ ?colors))
+    (bind ?shuffled (create$))
+    (while (> (length$ ?colors) 0)
+        (bind ?index (random 1 (length$ ?colors)))
+        (bind ?shuffled (create$ ?shuffled (nth$ ?index ?colors)))
+        (bind ?colors (delete$ ?colors ?index ?index))
+    )
+
+    (assert (guess (step ?s) (g ?shuffled)))
+    ;; Inserisce il nuovo tentativo
+    (printout t "Computer's guess at step " ?s ": " crlf)
+    (printout t (implode$ ?shuffled) crlf)
+    (pop-focus)
 )
 
 ; sostituire c1 con red
