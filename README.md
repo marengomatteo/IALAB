@@ -44,5 +44,5 @@ clingo Calendario.lp
 
 ### WINDOWS
 ```shell script
-(batch "PATH/IALAB/CLIPS/master-mind/go.bat")
+(batch C:/Users/marco/OneDrive/Desktop/IALAB/IALAB-1/CLIPS/master-mind/go.bat)
 ```
