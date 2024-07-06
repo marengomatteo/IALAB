@@ -360,7 +360,7 @@
    ?control <- (control (counter 4))
    =>
     (bind ?weight-increment (* 3 ?rp))
-    (printout t "Regola 1 attivata con counter = 4" crlf)
+
 
     (if (eq ?c1 red) then
         (bind ?current-value1 (fact-slot-value ?pos red))
@@ -404,7 +404,7 @@
     )
     
     (modify ?control (counter 3))
-    (printout t "Regola eseguita, counter impostato a 3" crlf)
+
 )
 
 (defrule update-weights-rp-pos2
@@ -416,7 +416,7 @@
    ?control <- (control (counter 3))
    =>
     (bind ?weight-increment (* 3 ?rp))
-    (printout t "Regola 2 attivata con counter = 3" crlf)
+
 
     (if (eq ?c2 red) then
         (bind ?current-value1 (fact-slot-value ?pos red))
@@ -460,7 +460,7 @@
     )
     
     (modify ?control (counter 2))
-    (printout t "Regola eseguita, counter impostato a 2" crlf)
+
 )
 
 (defrule update-weights-rp-pos3
@@ -472,7 +472,7 @@
    ?control <- (control (counter 2))
    =>
     (bind ?weight-increment (* 3 ?rp))
-    (printout t "Regola 3 attivata con counter = 2" crlf)
+
 
     (if (eq ?c3 red) then
         (bind ?current-value1 (fact-slot-value ?pos red))
@@ -516,7 +516,7 @@
     )
     
     (modify ?control (counter 1))
-    (printout t "Regola eseguita, counter impostato a 1" crlf)
+
 )
 
 (defrule update-weights-rp-pos4
@@ -528,7 +528,7 @@
    ?control <- (control (counter 1))
    =>
     (bind ?weight-increment (* 3 ?rp))
-    (printout t "Regola 4 attivata con counter = 1" crlf)
+
 
     (if (eq ?c4 red) then
         (bind ?current-value1 (fact-slot-value ?pos red))
@@ -572,7 +572,7 @@
     )
     
     (modify ?control (counter 0))
-    (printout t "Regola eseguita, counter impostato a 0" crlf)
+
 )
 
 
@@ -589,7 +589,7 @@
    ?control <- (control (counter 5))
    =>
     (bind ?weight-increment (* 1 ?mp))
-    (printout t "Regola mp attivata con counter = 5" crlf)
+
 
     (if (eq ?c1 red) then
         (bind ?current-value2 (fact-slot-value ?pos2 red))
@@ -681,7 +681,7 @@
     )
     
     (modify ?control (counter 4))
-    (printout t "Regola eseguita mp counter impostato a 4" crlf)
+
 )
 
 (defrule update-weights-mp2
@@ -696,7 +696,7 @@
    ?control <- (control (counter 6))
    =>
     (bind ?weight-increment (* 1 ?mp))
-    (printout t "Regola mp attivata con counter = 6" crlf)
+
 
     (if (eq ?c2 red) then
         (bind ?current-value1 (fact-slot-value ?pos1 red))
@@ -789,7 +789,7 @@
 
     
     (modify ?control (counter 5))
-    (printout t "Regola eseguita mp counter impostato a 5" crlf)
+
 )
 
 (defrule update-weights-mp3
@@ -804,7 +804,7 @@
    ?control <- (control (counter 7))
    =>
     (bind ?weight-increment (* 1 ?mp))
-    (printout t "Regola mp attivata con counter = 7" crlf)
+
 
     (if (eq ?c3 red) then
         (bind ?current-value1 (fact-slot-value ?pos1 red))
@@ -895,7 +895,7 @@
         (modify ?pos4 (orange ?new-value4))
     )
     (modify ?control (counter 6))
-    (printout t "Regola eseguita mp counter impostato a 6" crlf)
+
 )
 
 (defrule update-weights-mp4
@@ -910,7 +910,7 @@
    ?control <- (control (counter 8))
    =>
     (bind ?weight-increment (* 1 ?mp))
-    (printout t "Regola mp attivata con counter = 8" crlf)
+
 
     (if (eq ?c4 red) then
         (bind ?current-value1 (fact-slot-value ?pos1 red))
@@ -1001,7 +1001,7 @@
         (modify ?pos3 (orange ?new-value3))
     )
     (modify ?control (counter 7))
-    (printout t "Regola eseguita mp counter impostato a 7" crlf)
+
 )
 (defrule update-weights-mmissing
    (status (step ?s) (mode computer))
@@ -1019,7 +1019,7 @@
    (if (or (= ?missing 0) (= ?missing 4))
         then 
         (bind ?weight-increment (* 2 ?missing))
-        (printout t "Regola mp attivata con counter = 5" crlf)
+    
 
     (if (or (eq ?c1 red) (eq ?c2 red) (eq ?c3 red) (eq ?c4 red)) then
         (bind ?current-value1 (fact-slot-value ?pos1 red))
@@ -1300,5 +1300,5 @@
 
    )
    (modify ?control (counter 8))
-    (printout t "Regola eseguita miss counter impostato a 8" crlf)
+
 )
