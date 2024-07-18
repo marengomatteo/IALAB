@@ -10,6 +10,7 @@ itdeep(S,Profondita,Soglia,_,Cammino) :-
 
 itdeep(S,Profondita,Soglia,Step,Cammino) :-
     NuovaProf is Profondita + Step,
+    NuovaProf =< Soglia,
     itdeep(S,NuovaProf,Soglia,Step,Cammino).
 
 /* ricerca in profondità limitata */
@@ -23,3 +24,4 @@ ric_prof(S,Profondita,Visitati,[Az|SeqAzioni]):-
     \+member(SNuovo,Visitati),
     NuovaProfondita is Profondita-1,
     ric_prof(SNuovo,NuovaProfondita,[S|Visitati],SeqAzioni).
+
