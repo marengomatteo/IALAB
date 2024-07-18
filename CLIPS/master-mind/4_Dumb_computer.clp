@@ -20,20 +20,11 @@
   (peso (pos 4) (red 0) (blue 0) (yellow 0) (white 0) (black 0) (purple 0) (green 0) (orange 0))
 )
 
-(deftemplate control
-   (slot counter))
 
-(defrule initialize-counter
-   (declare (salience 100))
-   (not (control))
-   =>
-   (assert (control (counter 0)))
-)
-
-(defrule init-computer
-    (status (step 0) (mode computer))
-    ?control <- (control (counter 0))
+(defrule init-computer (declare (salience 100))
+    (status (step 0) (mode computer)) 
     =>
+    (printout t "Random " 0 ": " crlf) 
     ;; Inizializza la lista dei colori disponibili
     (bind ?colors (create$ red blue green yellow orange white black purple))
     ;; Inizializza la lista del nuovo tentativo
@@ -53,10 +44,10 @@
     (pop-focus)
 )
 
-(defrule init-computer2
+(defrule init-computer1 (declare (salience 80))
   (status (step 1) (mode computer))
-  ?control <- (control (counter 0))
   =>
+  (printout t "Random " 1 ": " crlf) 
   ;; Inizializza la lista dei colori disponibili
   (bind ?colors (create$ red blue green yellow orange white black purple))
   ;; Inizializza la lista del nuovo tentativo
@@ -73,17 +64,17 @@
                                (nth$ 2 ?new-guess) 
                                (nth$ 3 ?new-guess) 
                                (nth$ 4 ?new-guess))))
-   (modify ?control (counter 9))
+   
   ;; stampa il tentativo      
-  (printout t "Computer's guess at step " 0 ": " crlf) 
+  (printout t "Computer's guess at step " 1 ": " crlf) 
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
 
-(defrule init-computer3
+(defrule init-computer2 (declare (salience 80))
   (status (step 2) (mode computer))
-  ?control <- (control (counter 0))
   =>
+  (printout t "Random " 2 ": " crlf) 
   ;; Inizializza la lista dei colori disponibili
   (bind ?colors (create$ red blue green yellow orange white black purple))
   ;; Inizializza la lista del nuovo tentativo
@@ -100,17 +91,17 @@
                                (nth$ 2 ?new-guess) 
                                (nth$ 3 ?new-guess) 
                                (nth$ 4 ?new-guess))))
-   (modify ?control (counter 9))
+   
   ;; stampa il tentativo      
-  (printout t "Computer's guess at step " 0 ": " crlf) 
+  (printout t "Computer's guess at step " 2 ": " crlf) 
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
 
-(defrule init-computer4
+(defrule init-computer3 (declare (salience 80))
   (status (step 3) (mode computer))
-  ?control <- (control (counter 0))
   =>
+  (printout t "Random " 3 ": " crlf) 
   ;; Inizializza la lista dei colori disponibili
   (bind ?colors (create$ red blue green yellow orange white black purple))
   ;; Inizializza la lista del nuovo tentativo
@@ -127,17 +118,17 @@
                                (nth$ 2 ?new-guess) 
                                (nth$ 3 ?new-guess) 
                                (nth$ 4 ?new-guess))))
-   (modify ?control (counter 9))
+   
   ;; stampa il tentativo      
-  (printout t "Computer's guess at step " 0 ": " crlf) 
+  (printout t "Computer's guess at step " 3 ": " crlf) 
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
 
-(defrule init-computer5
+(defrule init-computer4 (declare (salience 80))
   (status (step 4) (mode computer))
-  ?control <- (control (counter 0))
   =>
+  (printout t "Random " 4 ": " crlf) 
   ;; Inizializza la lista dei colori disponibili
   (bind ?colors (create$ red blue green yellow orange white black purple))
   ;; Inizializza la lista del nuovo tentativo
@@ -154,17 +145,17 @@
                                (nth$ 2 ?new-guess) 
                                (nth$ 3 ?new-guess) 
                                (nth$ 4 ?new-guess))))
-   (modify ?control (counter 9))
+   
   ;; stampa il tentativo      
-  (printout t "Computer's guess at step " 0 ": " crlf) 
+  (printout t "Computer's guess at step " 4 ": " crlf) 
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
 
-(defrule init-computer6
+(defrule init-computer5 (declare (salience 80))
   (status (step 5) (mode computer))
-  ?control <- (control (counter 0))
   =>
+  (printout t "Random " 5 ": " crlf) 
   ;; Inizializza la lista dei colori disponibili
   (bind ?colors (create$ red blue green yellow orange white black purple))
   ;; Inizializza la lista del nuovo tentativo
@@ -181,17 +172,17 @@
                                (nth$ 2 ?new-guess) 
                                (nth$ 3 ?new-guess) 
                                (nth$ 4 ?new-guess))))
-   (modify ?control (counter 9))
+   
   ;; stampa il tentativo      
-  (printout t "Computer's guess at step " 0 ": " crlf) 
+  (printout t "Computer's guess at step " 5 ": " crlf) 
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
 
-(defrule init-computer7
+(defrule init-computer6 (declare (salience 80))
   (status (step 6) (mode computer))
-  ?control <- (control (counter 0))
   =>
+  (printout t "Random " 6 ": " crlf) 
   ;; Inizializza la lista dei colori disponibili
   (bind ?colors (create$ red blue green yellow orange white black purple))
   ;; Inizializza la lista del nuovo tentativo
@@ -208,17 +199,17 @@
                                (nth$ 2 ?new-guess) 
                                (nth$ 3 ?new-guess) 
                                (nth$ 4 ?new-guess))))
-   (modify ?control (counter 9))
+   
   ;; stampa il tentativo      
-  (printout t "Computer's guess at step " 0 ": " crlf) 
+  (printout t "Computer's guess at step " 6 ": " crlf) 
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
 
-(defrule init-computer8
+(defrule init-computer7 (declare (salience 80))
   (status (step 7) (mode computer))
-  ?control <- (control (counter 0))
   =>
+  (printout t "Random " 7 ": " crlf) 
   ;; Inizializza la lista dei colori disponibili
   (bind ?colors (create$ red blue green yellow orange white black purple))
   ;; Inizializza la lista del nuovo tentativo
@@ -235,17 +226,17 @@
                                (nth$ 2 ?new-guess) 
                                (nth$ 3 ?new-guess) 
                                (nth$ 4 ?new-guess))))
-   (modify ?control (counter 9))
+   
   ;; stampa il tentativo      
-  (printout t "Computer's guess at step " 0 ": " crlf) 
+  (printout t "Computer's guess at step " 7 ": " crlf) 
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
 
-(defrule init-computer9
+(defrule init-computer8 (declare (salience 80))
   (status (step 8) (mode computer))
-  ?control <- (control (counter 0))
   =>
+  (printout t "Random " 8 ": " crlf) 
   ;; Inizializza la lista dei colori disponibili
   (bind ?colors (create$ red blue green yellow orange white black purple))
   ;; Inizializza la lista del nuovo tentativo
@@ -262,9 +253,9 @@
                                (nth$ 2 ?new-guess) 
                                (nth$ 3 ?new-guess) 
                                (nth$ 4 ?new-guess))))
-   (modify ?control (counter 9))
+   
   ;; stampa il tentativo      
-  (printout t "Computer's guess at step " 0 ": " crlf) 
+  (printout t "Computer's guess at step " 8 ": " crlf) 
   (printout t (implode$ ?new-guess) crlf)
   (pop-focus)
 )
@@ -286,110 +277,12 @@
     (return (create$ ?max-color ?max-weight $?new-colors))
 )
 
-(defrule trovato-quattro-mp-4 (declare (salience 85))   
-    (status (step ?s) (mode computer))
-    (answer (step ?prev-s) (right-placed ?rp) (miss-placed ?mp))
-    (guess (step ?prev-s) (g ?c1 ?c2 ?c3 ?c4))
-    (test (= ?prev-s (- ?s 1)))
-    (test (= ?mp 4))
-    =>
-    ;; Inserisce il nuovo tentativo
-    (assert (guess (step ?s) (g ?c4 ?c1 ?c2 ?c3)))
-    ;; Inserisce il nuovo tentativo
-    (printout t "Computer's guess at step " ?s ": " crlf)
-    (printout t ?c4 " " ?c1 " " ?c2 " " ?c3 crlf)
-    (pop-focus)
-)
-
-(defrule trovato-quattro-mp-3 (declare (salience 85))   
-    (status (step ?s) (mode computer))
-    (answer (step ?prev-s) (right-placed ?rp) (miss-placed ?mp))
-    (guess (step ?prev-s) (g ?c1 ?c2 ?c3 ?c4))
-    (test (= ?prev-s (- ?s 1)))
-    (test (= (+ ?rp ?mp) 4))
-    (test (= ?mp 3))
-    =>
-
-    ;; Inserisce il nuovo tentativo
-    (assert (guess (step ?s) (g ?c1 ?c4 ?c2 ?c3)))
-    ;; Inserisce il nuovo tentativo
-    (printout t "Computer's guess at step " ?s ": " crlf)
-    (printout t ?c1 " " ?c4 " " ?c2 " " ?c3 crlf)
-    (pop-focus)
-)
-
-(defrule trovato-quattro-mp-2 (declare (salience 85))   
-    (status (step ?s) (mode computer))
-    (answer (step ?prev-s) (right-placed ?rp) (miss-placed ?mp))
-    (guess (step ?prev-s) (g ?c1 ?c2 ?c3 ?c4))
-    (test (= ?prev-s (- ?s 1)))
-    (test (= (+ ?rp ?mp) 4))
-    (test (= ?mp 2))
-    =>
-    ;; Inserisce il nuovo tentativo
-    (assert (guess (step ?s) (g ?c1 ?c3 ?c2 ?c4)))
-    ;; Inserisce il nuovo tentativo
-    (printout t "Computer's guess at step " ?s ": " crlf)
-    (printout t ?c1 " " ?c3 " " ?c2 " " ?c4 crlf)
-    (pop-focus)
-)
-
-(defrule trovato-zero (declare (salience 85))   
-    (status (step ?s) (mode computer))
-    (guess (step ?prev-s) (g ?gc1 ?gc2 ?gc3 ?gc4))
-    (answer (step ?prev-s) (right-placed ?rp) (miss-placed ?mp))
-    (test (= ?prev-s (- ?s 1)))
-    (test (= (+ ?rp ?mp) 0))
-    ?pos1 <- (peso (pos 1))
-    ?pos2 <- (peso (pos 2))
-    ?pos3 <- (peso (pos 3))
-    ?pos4 <- (peso (pos 4))
-    =>
-
-    (bind ?colors (create$ red blue green yellow orange white black purple))
-    (bind ?colors (delete-member$ (delete-member$ (delete-member$ (delete-member$ ?colors ?gc1) ?gc2) ?gc3) ?gc4))
-
-    ;; Inizializza la lista del nuovo tentativo
-    (bind ?new-guess (create$)) 
-    ;; Genera il tentativo automaticamente
-    (bind ?result1 (find-max-weight ?pos1 ?colors))
-    (bind ?c1 (nth$ 1 ?result1))
-    (bind ?w1 (nth$ 2 ?result1))
-    (bind ?colors (create$ (subseq$ ?result1 3 (length$ ?result1))))
-    (assert (combination-weight (step ?s) (pos 1) (weight ?w1) (color ?c1)))
-
-    (bind ?result2 (find-max-weight ?pos2 ?colors))
-    (bind ?c2 (nth$ 1 ?result2))
-    (bind ?w2 (nth$ 2 ?result2))
-    (bind ?colors (create$ (subseq$ ?result2 3 (length$ ?result2))))
-    (assert (combination-weight (step ?s) (pos 2) (weight ?w2) (color ?c1)))
-   
-    (bind ?result3 (find-max-weight ?pos3 ?colors))
-    (bind ?c3 (nth$ 1 ?result3))
-    (bind ?w3 (nth$ 2 ?result3))
-    (bind ?colors (create$ (subseq$ ?result3 3 (length$ ?result3))))
-    (assert (combination-weight (step ?s) (pos 3) (weight ?w3) (color ?c3)))
-   
-    (bind ?result4 (find-max-weight ?pos4 ?colors))
-    (bind ?c4 (nth$ 1 ?result4))
-    (bind ?w4 (nth$ 2 ?result4))
-    (assert (combination-weight (step ?s) (pos 4) (weight ?w4) (color ?c4)))
-
-    ;; Inserisce il nuovo tentativo
-    (assert (guess (step ?s) (g ?c1 ?c2 ?c3 ?c4)))
-    ;; stampa il tentativo      
-    (printout t "Computer's guess at step " ?s ": " crlf) 
-    (printout t ?c1 " " ?c2 " " ?c3 " " ?c4 crlf)
-    (pop-focus)
-)
-
-
 (defrule computer-player (declare (salience 70))
   (status (step ?s) (mode computer))
   (guess (step ?prev-s) (g $?k))
   (answer (step ?prev-s) (right-placed ?rp) (miss-placed ?mp))
   (test (= ?prev-s (- ?s 1)))
-  ?control <- (control (counter 0))
+  
   ?pos1 <- (peso (pos 1))
   ?pos2 <- (peso (pos 2))
   ?pos3 <- (peso (pos 3))
