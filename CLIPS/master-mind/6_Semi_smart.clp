@@ -1,9 +1,9 @@
 (defmodule SEMI_SMART_COMPUTER (import MAIN ?ALL) (import GAME ?ALL) (export ?ALL))
 
 
-(defglobal ?*pesoRP* = 3)
-(defglobal ?*pesoMP* = 2)
-(defglobal ?*pesoMISSING* = 2)
+(defglobal ?*pesoRP* = 1)
+(defglobal ?*pesoMP* = 1)
+(defglobal ?*pesoMISSING* = 1)
 
 (deftemplate combination-weight (slot step) (slot pos) (slot weight) (slot color))
 

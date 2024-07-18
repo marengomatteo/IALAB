@@ -26,8 +26,8 @@
     ;(printout t crlf crlf)
     ;(printout t "vado ad agent  step" ?s)
     ;(focus SMART_COMPUTER)
-    ; (focus SEMI_SMART_COMPUTER)
-    (focus DUMB_COMPUTER)
+    (focus SEMI_SMART_COMPUTER)
+    ;(focus DUMB_COMPUTER)
 )
 
 
