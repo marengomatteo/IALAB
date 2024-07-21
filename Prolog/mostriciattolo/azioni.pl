@@ -10,29 +10,50 @@ nonRipetere(ovest, []).
 nonRipetere(nord, [LastAz|_]) :- nord \= LastAz.
 nonRipetere(nord,[]).
 
+
 rovesciamento(est,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
     righe_elementi(est,PosElementi, Lista),
     itera_righe(est,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
-    ( incontrato(X), X == true -> retract(incontrato(X)),
-    assertz(incontrato(false)), fail; true).
+    ( incontrato(X), X == true -> 
+    	(   retract(inc_portale(_)),
+            assertz(inc_portale(false)),
+        	retract(incontrato(_)),
+    		assertz(incontrato(false)), fail 
+        )
+    ; true).
 
 rovesciamento(ovest,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
     righe_elementi(ovest,PosElementi, Lista),
     itera_righe(ovest,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
-     ( incontrato(X), X == true -> retract(incontrato(X)),
-    assertz(incontrato(false)), fail; true).
+     ( incontrato(X), X == true -> 
+    	(   retract(inc_portale(_)),
+            assertz(inc_portale(false)),
+        	retract(incontrato(_)),
+    		assertz(incontrato(false)), fail 
+        )
+    ; true).
 
 rovesciamento(nord,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
     colonne_elementi(nord,PosElementi, Lista),
 	itera_colonne(nord,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
-    ( incontrato(X), X == true -> retract(incontrato(X)),assertz(incontrato(false)), fail
+     ( incontrato(X), X == true -> 
+    	(   retract(inc_portale(_)),
+            assertz(inc_portale(false)),
+        	retract(incontrato(_)),
+    		assertz(incontrato(false)), fail 
+        )
     ; true).
 
 rovesciamento(sud,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
     colonne_elementi(sud,PosElementi, Lista),
 	itera_colonne(sud,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
-    ( incontrato(X), X == true -> retract(incontrato(X)),
-    assertz(incontrato(false)), fail; true).
+       ( incontrato(X), X == true -> 
+    	(   retract(inc_portale(_)),
+            assertz(inc_portale(false)),
+        	retract(incontrato(_)),
+    		assertz(incontrato(false)), fail 
+        )
+    ; true).
 
 
 righe_elementi(_,[], []). 

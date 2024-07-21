@@ -1,4 +1,6 @@
+/* costo da nodo iniziale a nodo attuale */
 :- dynamic g_cost/2.
+/* lista dei genitori dei nodi nodo, padre, azione*/
 :- dynamic parent/3.
 
 euristica(pos(X, Y),[pos(XG1,YG1)],H) :- 
