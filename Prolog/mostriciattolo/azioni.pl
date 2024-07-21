@@ -87,6 +87,8 @@ controllo_oggetti(Az,[[_,pos(R,C)] | Tail],ListaEl, NewListaPosTail,HaMartello, 
     controllo_oggetti(Az,Tail,NewListaPos, NewListaPosTail,HaMartello, NewPosG, NewPosGhiaccio).
 controllo_oggetti(_, [], NewListaPos, NewListaPos,_, PosGhiaccio, PosGhiaccio).
 
+
+/* posizione_valida implementa il singolo step del movimento dopo alcuni controlli */
 /* --- posizione valida EST --- */
 posizione_valida(est,Tipo,pos(R,C),pos(R,C1),ListaPos,HaMartello,PosGhiaccio, NewPosG) :-
     C2 is C+1,C2 =< 8,
@@ -146,6 +148,7 @@ check_martello(Tipo,pos(R,C), HaMartello):-
     	true   
     ).
 
+/* controlla che la cella sia occupata da qualche elemento*/
 occupata(pos(R,C),Tipo,ListaEl,HaMartello,PosGhiaccio,NewPosG) :-
  	member([_,pos(R, C)], ListaEl);
     (   
@@ -158,7 +161,7 @@ occupata(pos(R,C),Tipo,ListaEl,HaMartello,PosGhiaccio,NewPosG) :-
               NewPosG = PosGhiaccio
        )).
 
-
+/* elimina elemento viene chiamato per eliminare il ghiaccio */
 elimina_elemento(pos(R,C), [pos(R,C)|T], T) :- !.
 elimina_elemento(Posizione, [H|T], [H|R]) :-
     elimina_elemento(Posizione, T, R).
@@ -167,16 +170,21 @@ elimina_elemento(_, [], []).
 ha_martello(pos(R,C), true) :- martello(pos(R, C)).
 ha_martello(_, _).
 
+/* trova il tipo di elemento */
 trova_elemento(pos(R,C), [[Tipo, pos(R,C)]|_], Tipo) :- !.
 trova_elemento(Posizione, [_|T], Elemento) :-
     trova_elemento(Posizione, T, Elemento).
 
+
+/* modifica la posizione degli elementi*/
 modifica_posizione([], _,_, []).
 
 modifica_posizione([[Tipo,pos(R,C)] | Resto], CurrentPos,NewPos, [[Tipo,ElPos]| NuovoResto]) :-
     (   pos(R,C) = CurrentPos -> ElPos = NewPos; ElPos = pos(R,C) ),
     modifica_posizione(Resto, CurrentPos, NewPos, NuovoResto).
 
+
+/* qui controlliamo che le gemme siano adiacente e il gioco possa ottenere un bonus */
 adiacenti(pos(R1,C1), pos(R2,C2)) :-
     (R1 =:= R2, abs(C1 - C2) =:= 1);
     (C1 =:= C2, abs(R1 - R2) =:= 1).
