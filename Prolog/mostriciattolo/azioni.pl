@@ -12,7 +12,7 @@ nonRipetere(nord,[]).
 
 
 rovesciamento(est,PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
-    righe_elementi(est,PosElementi, Lista),
+    righe_elementi(est,PosElementi, Lista), /* restituisce tutte le righe in cui sono presenti elmenti, senza duplicati*/
     itera_righe(est,Lista, PosElementi,ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio),!,
     ( incontrato(X), X == true -> 
     	(   retract(inc_portale(_)),
@@ -67,7 +67,7 @@ colonne_elementi(Az,[[_,pos(_, C)] | T], ListaColonne) :-
     sort([C | CT],ListaColonne). 
 
 itera_righe(_,[], ListaNew,ListaNew,_, PosGhiaccio, PosGhiaccio).
-% head: prima riga, tail righe dopo
+% per ogni singola riga ordina gli elementi per colonna (< o >) ed esegue i movimenti
 itera_righe(Az,[Head|Tail], PosElementi, ListaNew,HaMartello, PosGhiaccio, NewPosGhiaccio) :-
     ordina_per_colonna(Az,Head,PosElementi,Res),
     controllo_oggetti(Az,Res,PosElementi,NewPosElementi,HaMartello, PosGhiaccio, NewPosGhiaccio),
